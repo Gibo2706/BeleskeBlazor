@@ -5,8 +5,7 @@
     },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "BeleskeDB",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:BeleskeDB"
     }
   }
 }

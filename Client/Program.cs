@@ -1,5 +1,4 @@
 using BeleskeBlazor.Client;
-using BeleskeBlazor.Client.Data.Service;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -11,6 +10,5 @@ builder.Services.AddHttpClient("BeleskeBlazor.ServerAPI", client => client.BaseA
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("BeleskeBlazor.ServerAPI"));
-builder.Services.AddScoped<DbService, DbService>();
 
 await builder.Build().RunAsync();
