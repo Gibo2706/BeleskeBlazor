@@ -23,6 +23,16 @@ public partial class Student
     [Unicode(false)]
     public string Prezime { get; set; } = null!;
 
+    [Column("username")]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string Username { get; set; } = null!;
+
+    [Column("password")]
+    [StringLength(255)]
+    [Unicode(false)]
+    public string Password { get; set; } = null!;
+
     [InverseProperty("IdStudentNavigation")]
     public virtual ICollection<Beleska> Beleskas { get; set; } = new List<Beleska>();
 }
