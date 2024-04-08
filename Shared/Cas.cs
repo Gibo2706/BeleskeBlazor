@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeleskeBlazor.Shared;
 
-public partial class Ca
+public partial class Cas
 {
     [Key]
     [Column("idCas")]

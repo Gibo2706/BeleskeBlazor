@@ -23,7 +23,7 @@ public partial class DrziUsemestru
     public int IdPredmet { get; set; }
 
     [InverseProperty("IdDrziNavigation")]
-    public virtual ICollection<Ca> Cas { get; set; } = new List<Ca>();
+    public virtual ICollection<Cas> Cas { get; set; } = new List<Cas>();
 
     [ForeignKey("IdPredmet")]
     [InverseProperty("DrziUsemestrus")]

@@ -24,7 +24,7 @@ namespace BeleskeBlazor.Server.Data
 
         public DbSet<Beleska> Beleska { get; set; }
 
-        public DbSet<Ca> Cas { get; set; }
+        public DbSet<Cas> Cas { get; set; }
 
     }
 

@@ -17,7 +17,7 @@ public partial class BeleskeContext : DbContext
 
     public virtual DbSet<Beleska> Beleskas { get; set; }
 
-    public virtual DbSet<Ca> Cas { get; set; }
+    public virtual DbSet<Cas> Cas { get; set; }
 
     public virtual DbSet<DrziUsemestru> DrziUsemestrus { get; set; }
 
@@ -48,7 +48,7 @@ public partial class BeleskeContext : DbContext
                 .HasConstraintName("Beleska_Student");
         });
 
-        modelBuilder.Entity<Ca>(entity =>
+        modelBuilder.Entity<Cas>(entity =>
         {
             entity.HasKey(e => e.IdCas).HasName("PK__Cas__398E4042983BE281");
 

@@ -29,7 +29,7 @@ public partial class Beleska
 
     [ForeignKey("IdCas")]
     [InverseProperty("Beleskas")]
-    public virtual Ca IdCasNavigation { get; set; } = null!;
+    public virtual Cas IdCasNavigation { get; set; } = null!;
 
     [ForeignKey("IdStudent")]
     [InverseProperty("Beleskas")]
