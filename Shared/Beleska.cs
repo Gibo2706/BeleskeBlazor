@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -35,6 +36,15 @@ public partial class Beleska
     [InverseProperty("Beleskas")]
     public virtual Student IdStudentNavigation { get; set; } = null!;
 }
+
+public record class BeleskaDTO(
+        [property:JsonPropertyName("idBeleska")] int IdBeleska,
+        [property: JsonPropertyName("redniBroj")] int RedniBroj,
+        [property:JsonPropertyName("naslov")] string Naslov,
+        [property:JsonPropertyName("dokument")] byte[] Dokument,
+        [property:JsonPropertyName("idStudent")] int IdStudent,
+        [property:JsonPropertyName("idCas")] int IdCas
+    );
 
 public class BeleskaTypeConverter : TypeConverter
 {

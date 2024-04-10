@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -19,6 +20,11 @@ public partial class Semestar
     [InverseProperty("IdSemestarNavigation")]
     public virtual ICollection<DrziUsemestru> DrziUsemestrus { get; set; } = new List<DrziUsemestru>();
 }
+
+public record class SemestarDTO(
+        [property: JsonPropertyName("idSemestar")] int IdSemestar,
+        [property: JsonPropertyName("broj")] int Broj
+    );
 
 public class SemestarTypeConverter : TypeConverter
 {

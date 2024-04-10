@@ -21,7 +21,7 @@
                             <option value="@subject.IdPredmet">@subject.Naziv</option>
                         }
                     }else{
-                        <option value="-1">No subjects available</option>
+                            <option value="-1">No subjects available</option>
                     }
                 </select>
             </div>
@@ -48,11 +48,11 @@
 </div>
 
 @code {
-    List<Predmet> Predmeti;
-    ObservableCollection<Cas> Casovi;
+    List<PredmetDTO>? Predmeti;
+    ObservableCollection<Cas>? Casovi;
     int SelectedSubjectId;
     int SelectedLectureId;
-    //DataService DataService;
+
     protected override async Task OnInitializedAsync()
     {
         Casovi = new ObservableCollection<Cas>();
@@ -62,7 +62,7 @@
     private void SubjectInput(int id)
     {
         SelectedSubjectId = id;
-        Casovi.Clear();
+        Casovi!.Clear();
         GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
         SelectedLectureId = -1;
     }

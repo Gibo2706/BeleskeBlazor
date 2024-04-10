@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -27,6 +28,12 @@ public partial class Predmet
         return "{" + IdPredmet + "} " + Naziv;
     }
 }
+
+public record class PredmetDTO(
+    [property: JsonPropertyName("idPredmet")] int IdPredmet,
+    [property: JsonPropertyName("naziv")] string Naziv
+    );
+
 
 public class PredmetTypeConverter : TypeConverter
 {

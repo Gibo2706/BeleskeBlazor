@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -27,6 +28,12 @@ public partial class Profesor
     [InverseProperty("IdProfesorNavigation")]
     public virtual ICollection<DrziUsemestru> DrziUsemestrus { get; set; } = new List<DrziUsemestru>();
 }
+
+public record class ProfesorDTO(
+        [property:JsonPropertyName("idProfesor")] int IdProfesor,
+        [property: JsonPropertyName("ime")] string Ime,
+        [property:JsonPropertyName("prezime")] string Prezime
+    );
 
 public class ProfesorTypeConverter : TypeConverter
 {

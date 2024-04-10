@@ -26,9 +26,9 @@ namespace BeleskeBlazor.Server.Controllers
             return Ok(list);
         }
         
-        public async Task<ActionResult<List<Predmet>>> GetAllPredmeti()
+        public async Task<ActionResult<List<PredmetDTO>>> GetAllPredmeti()
         {
-            var list = await _context.Predmet.ToListAsync();
+            var list = await _context.Predmet.Select(o => new PredmetDTO(o.IdPredmet, o.Naziv)).ToListAsync();
             return Ok(list);
         }
     }
