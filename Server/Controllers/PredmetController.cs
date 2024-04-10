@@ -17,6 +17,7 @@ namespace BeleskeBlazor.Server.Controllers
             _context = context;
         }
 
+        [Route("getCasoviPredmeta")]
         public async Task<ActionResult<List<Cas>>> GetCasoviPredmeta(int id)
         {
             var list = _context.Predmet.Find(id)
@@ -24,7 +25,7 @@ namespace BeleskeBlazor.Server.Controllers
                         .SelectMany(dus=>dus.Cas);
             return Ok(list);
         }
-
+        
         public async Task<ActionResult<List<Predmet>>> GetAllPredmeti()
         {
             var list = await _context.Predmet.ToListAsync();
