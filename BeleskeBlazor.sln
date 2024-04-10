@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeleskeBlazor.Server", "Server\BeleskeBlazor.Server.csproj", "{C42DCDB4-542A-4F8E-8BD3-73995321B599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeleskeBlazor.Server", "Server\BeleskeBlazor.Server.csproj", "{C42DCDB4-542A-4F8E-8BD3-73995321B599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeleskeBlazor.Client", "Client\BeleskeBlazor.Client.csproj", "{EE6DD26F-4B8C-42A8-81B4-6AE029BC6721}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeleskeBlazor.Client", "Client\BeleskeBlazor.Client.csproj", "{EE6DD26F-4B8C-42A8-81B4-6AE029BC6721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeleskeBlazor.Shared", "Shared\BeleskeBlazor.Shared.csproj", "{DD35E678-4778-44C6-B123-7D213C25387C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeleskeBlazor.Shared", "Shared\BeleskeBlazor.Shared.csproj", "{DD35E678-4778-44C6-B123-7D213C25387C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

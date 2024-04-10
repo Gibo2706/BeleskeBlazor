@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeleskeBlazor.Shared;
 
+[TypeConverter(typeof(CasTypeConverter))]
 public partial class Cas
 {
     [Key]
@@ -30,4 +32,24 @@ public partial class Cas
     [ForeignKey("IdDrzi")]
     [InverseProperty("Cas")]
     public virtual DrziUsemestru IdDrziNavigation { get; set; } = null!;
+}
+
+public class CasTypeConverter : TypeConverter
+{
+    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    {
+        // Check if conversion from string is supported
+        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+    }
+
+    public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+    {
+        if (value is string stringValue)
+        {
+
+            return new Cas();
+        }
+
+        return base.ConvertFrom(context, culture, value);
+    }
 }
