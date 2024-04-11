@@ -1,6 +1,8 @@
 ﻿@page "/create-note"
 @using BeleskeBlazor.Shared
 @using System.Collections.ObjectModel
+@using BeleskeBlazor.Client.Service
+@inject DataService DataService
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
@@ -8,30 +10,35 @@
     <h1>Welcome to your Notes App!</h1>
     <hr>
     <div class="mt-3">
-        <form @onsubmit="HandleSubmit">
+        <form @onsubmit="()=> {}">
             <div class="mb-3">
                 <label for="subjectSelect" class="form-label">Subject:</label>
-                <select class="form-control" id="subjectSelect" @bind="selectedSubject" @bind:event="onGet(id)">
-                    <option value="">-- Select Subject --</option>
-                    @if (subjects != null)
-                    {
-                        @foreach (var subject in subjects)
+                <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
+                    <option selected>Choose...</option>
+                    @if(Predmeti != null && Predmeti.Count > 0){
+                        @foreach (var subject in Predmeti)
                         {
-                                    <option value="@subject.IdPredmet">@subject.Naziv</option>
+                            <option value="@subject.IdPredmet">@subject.Naziv</option>
                         }
+                    }else{
+                            <option value="-1">No subjects available</option>
                     }
                 </select>
             </div>
             <div class="mb-3">
                 <label for="lectureSelect" class="form-label">Lecture:</label>
-                <select class="form-control" id="lectureSelect" @bind="selectedLectureId" >
-                    <option value="">-- Select Lecture --</option>
-                    @if (selectedSubject != null)
+                <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
+                    <option selected>Choose...</option>
+                    @if (Casovi != null && Casovi.Count > 0)
                     {
-                        @foreach (var lecture in lectures)
+                        @foreach (var subject in Casovi)
                         {
-                                    <option value="@lecture.IdCas">@lecture.RedniBroj</option>
+                            <option value="@subject.IdCas">@subject.RedniBroj .</option>
                         }
+                    }
+                    else
+                    {
+                        <option value="-1">No lectures available for selected subject</option>
                     }
                 </select>
             </div>
@@ -41,37 +48,28 @@
 </div>
 
 @code {
-    Predmet selectedSubject;
-    Cas selectedLectureId;
-    List<Predmet> subjects;
-    ObservableCollection<Cas> lectures;
-
-    public void OnGet(int id)
-    {
-        selectedSubject = subjects.Where(p => p.IdPredmet == id).First();
-        lectures.Clear();
-        foreach(Cas c in GetLecturesForSubject(id))
-        {
-            lectures.Add(c);
-        }
-    }
+    List<PredmetDTO>? Predmeti;
+    ObservableCollection<Cas>? Casovi;
+    int SelectedSubjectId;
+    int SelectedLectureId;
 
     protected override async Task OnInitializedAsync()
     {
-        lectures = new ObservableCollection<Cas>();
-        subjects = new List<Predmet>()
-        {
-            new Predmet()
-            {
-                 IdPredmet = 1,
-                 Naziv = "Kita"
-            },
-            new Predmet()
-            {
-                 IdPredmet = 2,
-                 Naziv = "Kita2"
-            },
-        };
+        Casovi = new ObservableCollection<Cas>();
+        Predmeti = await DataService.GetMyData();
+    }
+
+    private void SubjectInput(int id)
+    {
+        SelectedSubjectId = id;
+        Casovi!.Clear();
+        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
+        SelectedLectureId = -1;
+    }
+
+    private void LectureInput(int id)
+    {
+        SelectedLectureId = id;
     }
 
     private List<Cas> GetLecturesForSubject(int subjectId)
@@ -89,9 +87,5 @@
                  RedniBroj = 2
             },
         };
-    }
-    private async Task HandleSubmit()
-    {
-        
     }
 }

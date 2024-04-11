@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-
-namespace BeleskeBlazor.Shared;
+﻿namespace BeleskeBlazor.Shared;
 
 [Table("Beleska")]
 public partial class Beleska
@@ -35,6 +29,40 @@ public partial class Beleska
     [InverseProperty("Beleskas")]
     public virtual Student? IdStudentNavigation { get; set; }
 
-    [InverseProperty("IdBeleskaNavigation")]
-    public virtual ICollection<TagBeleska> TagBeleskas { get; set; } = new List<TagBeleska>();
-}
+    public record class BeleskaDTO(
+            [property: JsonPropertyName("idBeleska")] int IdBeleska,
+            [property: JsonPropertyName("redniBroj")] int RedniBroj,
+            [property: JsonPropertyName("naslov")] string Naslov,
+            [property: JsonPropertyName("dokument")] byte[] Dokument,
+            [property: JsonPropertyName("idStudent")] int IdStudent,
+            [property: JsonPropertyName("idCas")] int IdCas
+        );
+
+    public class BeleskaTypeConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            // Check if conversion from string is supported
+            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+        }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+        {
+            if (value is string stringValue)
+            {
+
+                return new Beleska();
+            }
+
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
+        {
+            if (destinationType == typeof(string) && value is Beleska beleska)
+            {
+                return beleska.IdBeleska + " - " + beleska.Naslov;
+            }
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }

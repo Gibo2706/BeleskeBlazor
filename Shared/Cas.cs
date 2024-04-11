@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -33,6 +34,15 @@ public partial class Cas
     [InverseProperty("Cas")]
     public virtual DrziUsemestru IdDrziNavigation { get; set; } = null!;
 }
+
+public record class CasDTO(
+        [property:JsonPropertyName("idCas")] int IdCas,
+        [property: JsonPropertyName("redniBroj")] int RedniBroj,
+        [property:JsonPropertyName("datum")] DateOnly Datum,
+        [property:JsonPropertyName("vremePocetka")] DateTime VremePocetka,
+        [property:JsonPropertyName("vremeKraja")] DateTime VremeKraja,
+        [property:JsonPropertyName("idDrzi")] int IdDrzi
+       );
 
 public class CasTypeConverter : TypeConverter
 {

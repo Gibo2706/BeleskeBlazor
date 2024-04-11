@@ -26,6 +26,7 @@ namespace BeleskeBlazor.Server.Data
 
         public DbSet<Cas> Cas { get; set; }
 
+        public DbSet<Predmet> Predmet { get; set; }
     }
 
     public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
