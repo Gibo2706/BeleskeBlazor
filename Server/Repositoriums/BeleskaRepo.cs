@@ -1,7 +1,6 @@
 ﻿using BeleskeBlazor.Server.Data;
 using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
-using Microsoft.AspNetCore.Mvc;
 
 namespace BeleskeBlazor.Server.Repositoriums
 {
@@ -26,9 +25,10 @@ namespace BeleskeBlazor.Server.Repositoriums
                 b.IdCas = bdt.IdCas;
 
                 _context.Beleska.Add(b);
-
+                _context.SaveChanges();
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -37,7 +37,7 @@ namespace BeleskeBlazor.Server.Repositoriums
         public async Task<List<Beleska>> GetBeleskeCasa(int id)
         {
             List<Beleska> list = _context.Beleska
-                                .Where(b=> b.IdCas==id)
+                                .Where(b => b.IdCas == id)
                                 .ToList();
             return list;
         }

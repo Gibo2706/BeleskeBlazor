@@ -1,9 +1,6 @@
-﻿using BeleskeBlazor.Server.Data;
-using BeleskeBlazor.Server.Repositoriums;
-using BeleskeBlazor.Shared;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace BeleskeBlazor.Server.Controllers
@@ -32,9 +29,9 @@ namespace BeleskeBlazor.Server.Controllers
 
         [Route("addBeleska")]
         [HttpPost]
-        public async Task<ActionResult> addBeleska(BeleskaDTO bdt)
+        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt)
         {
-            if(await _belRepo.insertBeleska(bdt))
+            if (await _belRepo.insertBeleska(bdt))
                 return Ok();
             return BadRequest();
         }

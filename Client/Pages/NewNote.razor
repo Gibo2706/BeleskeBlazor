@@ -19,10 +19,11 @@
                 @if(Predmeti != null && Predmeti.Count > 0){
                 <label for="subjectSelect" class="form-label">Subject:</label>
                 <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
-                        @foreach (var subject in Predmeti)
-                        {
-                            <option value="@subject.IdPredmet">@subject.Naziv</option>
-                        }
+                    <option selected>Choose...</option>
+                    @foreach (var subject in Predmeti)
+                    {
+                        <option value="@subject.IdPredmet">@subject.Naziv</option>
+                    }
                 </select>
                 }
 
@@ -114,50 +115,36 @@
         IsSelected = false;
         Casovi = new ObservableCollection<CasDTO>();
         Semestri = new ObservableCollection<SemestarDTO>();
-        Predmeti = await DataService.GetMyData();
+        Predmeti = await DataService.GetAllSubjects();
 
     }
 
-    private void SubjectInput(int id)
+
+    private async Task SubjectInput(int id)
     {
         SelectedSubjectId = id;
         Semestri!.Clear();
         IsSelected = true;
-        GetSemestarsForSubject(id).ForEach(x => Semestri.Add(x));
+        (await GetSemestarsAsync(SelectedSubjectId)).ForEach(x => Semestri.Add(x));
         SelectedLectureId = -1;
         SelectedSemestarId = -1;
     }
 
-    private void SemestarInput(int id)
+    private async Task SemestarInput(int id)
     {
-        SelectedSemestarId = id;
+        SelectedSemestarId = id; 
         Casovi!.Clear();
-        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x)); 
+        (await GetLecturesAsync(SelectedSubjectId, id)).ForEach(x => Casovi.Add(x));
         SelectedLectureId = -1;
     }
+
+    private Task<List<SemestarDTO>> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
+
+    private Task<List<CasDTO>> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
 
     private void LectureInput(int id)
     {
         SelectedLectureId = id;
-        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
     }
 
-    private List<CasDTO> GetLecturesForSubject(int subjectId)
-    {
-        return new List<CasDTO>()
-        {
-            new CasDTO(1,1,new DateOnly(), new DateTime(), new DateTime()),
-            new CasDTO(2,2,new DateOnly(), new DateTime(), new DateTime()),
-        };
-    }
-
-    private List<SemestarDTO> GetSemestarsForSubject(int subjectId)
-    {
-        return new List<SemestarDTO>()
-        {
-            new SemestarDTO(1, "2023/2024", 1),
-            new SemestarDTO(2, "2023/2024", 2),
-            new SemestarDTO(3, "2024/2025", 3),
-        };
-    }
 }
