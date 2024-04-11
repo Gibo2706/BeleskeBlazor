@@ -26,7 +26,7 @@ namespace BeleskeBlazor.Server.Controllers
             List<SemestarDTO> semestri=list.Select(sem=>
                                           new SemestarDTO(sem.IdSemestar, sem.SkolskaGodina, sem.Broj))
                                          .ToList();      
-            return Ok(list);
+            return Ok(semestri);
         }
 
     }

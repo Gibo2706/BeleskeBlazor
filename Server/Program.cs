@@ -1,4 +1,5 @@
 using BeleskeBlazor.Server.Data;
+using BeleskeBlazor.Server.Repositoriums;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<DataContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<BeleskaRepo>();
+builder.Services.AddScoped<CasRepo>();
+builder.Services.AddScoped<PredmetRepo>();
+builder.Services.AddScoped<SemestarRepo>();
 
 
 

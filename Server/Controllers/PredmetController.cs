@@ -22,7 +22,7 @@ namespace BeleskeBlazor.Server.Controllers
             List<PredmetDTO> predmeti = list.Select(pr =>
                                          new PredmetDTO(pr.IdPredmet, pr.Naziv))
                                         .ToList();
-            return Ok(list);
+            return Ok(predmeti);
         }
     }
 }
