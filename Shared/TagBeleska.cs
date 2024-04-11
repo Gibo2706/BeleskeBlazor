@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Shared;
 
@@ -27,4 +27,39 @@ public partial class TagBeleska
     [ForeignKey("IdTag")]
     [InverseProperty("TagBeleskas")]
     public virtual Tag IdTagNavigation { get; set; } = null!;
+}
+
+public record class TagBeleskaDTO(
+        [property: JsonPropertyName("idTagBeleska")] int IdTagBeleska,
+        [property: JsonPropertyName("idTag")] int IdTag,
+        [property: JsonPropertyName("idBeleska")] int IdBeleska
+       );
+
+public class TagBeleskaTypeConverter : TypeConverter
+{
+    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    {
+        // Check if conversion from string is supported
+        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+    }
+
+    public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+    {
+        if (value is string stringValue)
+        {
+            return new TagBeleska();
+        }
+
+        return base.ConvertFrom(context, culture, value);
+    }
+
+    public override object? ConvertTo(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
+    {
+        if (destinationType == typeof(string) && value is TagBeleska tagBeleska)
+        {
+            return tagBeleska.IdTagBeleska + " - " + tagBeleska.IdTag + " - " + tagBeleska.IdBeleska;
+        }
+
+        return base.ConvertTo(context, culture, value, destinationType);
+    }
 }

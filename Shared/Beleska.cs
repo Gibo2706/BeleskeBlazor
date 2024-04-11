@@ -1,4 +1,10 @@
-﻿namespace BeleskeBlazor.Shared;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Text.Json.Serialization;
+
+namespace BeleskeBlazor.Shared;
 
 [Table("Beleska")]
 public partial class Beleska
@@ -66,3 +72,4 @@ public partial class Beleska
             return base.ConvertTo(context, culture, value, destinationType);
         }
     }
+}

@@ -1,4 +1,11 @@
-﻿namespace BeleskeBlazor.Shared;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Text.Json.Serialization;
+
+namespace BeleskeBlazor.Shared;
 
 [Table("Profesor")]
 public partial class Profesor
