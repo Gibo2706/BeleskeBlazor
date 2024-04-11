@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 namespace BeleskeBlazor.Shared;
 
 [Table("DrziUSemestru")]
-[TypeConverter(typeof(DrziUSemestruTypeConverter))]
 public partial class DrziUsemestru
 {
     [Key]
@@ -40,10 +39,10 @@ public partial class DrziUsemestru
 }
 
 public record class DrziUsemestruDTO(
-        [property:JsonPropertyName("idDrzi")] int IdDrzi,
+        [property: JsonPropertyName("idDrzi")] int IdDrzi,
         [property: JsonPropertyName("idProfesor")] int IdProfesor,
-        [property:JsonPropertyName("idSemestar")] int IdSemestar,
-        [property:JsonPropertyName("idPredmet")] int IdPredmet
+        [property: JsonPropertyName("idSemestar")] int IdSemestar,
+        [property: JsonPropertyName("idPredmet")] int IdPredmet
     );
 
 public class DrziUSemestruTypeConverter : TypeConverter

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -7,7 +8,7 @@ using System.Text.Json.Serialization;
 namespace BeleskeBlazor.Shared;
 
 [Table("Semestar")]
-[TypeConverter(typeof(SemestarTypeConverter))]
+[Index("Broj", "SkolskaGodina", Name = "Semestar_ix1", IsUnique = true)]
 public partial class Semestar
 {
     [Key]
@@ -16,6 +17,11 @@ public partial class Semestar
 
     [Column("broj")]
     public int Broj { get; set; }
+
+    [Column("skolskaGodina")]
+    [StringLength(15)]
+    [Unicode(false)]
+    public string SkolskaGodina { get; set; } = null!;
 
     [InverseProperty("IdSemestarNavigation")]
     public virtual ICollection<DrziUsemestru> DrziUsemestrus { get; set; } = new List<DrziUsemestru>();

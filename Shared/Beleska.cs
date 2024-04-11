@@ -7,7 +7,6 @@ using System.Text.Json.Serialization;
 namespace BeleskeBlazor.Shared;
 
 [Table("Beleska")]
-[TypeConverter(typeof(BeleskaTypeConverter))]
 public partial class Beleska
 {
     [Key]
@@ -23,7 +22,7 @@ public partial class Beleska
     public byte[] Dokument { get; set; } = null!;
 
     [Column("idStudent")]
-    public int IdStudent { get; set; }
+    public int? IdStudent { get; set; }
 
     [Column("idCas")]
     public int IdCas { get; set; }
@@ -34,43 +33,43 @@ public partial class Beleska
 
     [ForeignKey("IdStudent")]
     [InverseProperty("Beleskas")]
-    public virtual Student IdStudentNavigation { get; set; } = null!;
-}
+    public virtual Student? IdStudentNavigation { get; set; }
 
-public record class BeleskaDTO(
-        [property:JsonPropertyName("idBeleska")] int IdBeleska,
-        [property: JsonPropertyName("redniBroj")] int RedniBroj,
-        [property:JsonPropertyName("naslov")] string Naslov,
-        [property:JsonPropertyName("dokument")] byte[] Dokument,
-        [property:JsonPropertyName("idStudent")] int IdStudent,
-        [property:JsonPropertyName("idCas")] int IdCas
-    );
+    public record class BeleskaDTO(
+            [property: JsonPropertyName("idBeleska")] int IdBeleska,
+            [property: JsonPropertyName("redniBroj")] int RedniBroj,
+            [property: JsonPropertyName("naslov")] string Naslov,
+            [property: JsonPropertyName("dokument")] byte[] Dokument,
+            [property: JsonPropertyName("idStudent")] int IdStudent,
+            [property: JsonPropertyName("idCas")] int IdCas
+        );
 
-public class BeleskaTypeConverter : TypeConverter
-{
-    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    public class BeleskaTypeConverter : TypeConverter
     {
-        // Check if conversion from string is supported
-        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-    }
-
-    public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
-    {
-        if (value is string stringValue)
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-
-            return new Beleska();
+            // Check if conversion from string is supported
+            return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
         }
 
-        return base.ConvertFrom(context, culture, value);
-    }
-
-    public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
-    {
-        if (destinationType == typeof(string) && value is Beleska beleska)
+        public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
-            return beleska.IdBeleska + " - " + beleska.Naslov;
+            if (value is string stringValue)
+            {
+
+                return new Beleska();
+            }
+
+            return base.ConvertFrom(context, culture, value);
         }
-        return base.ConvertTo(context, culture, value, destinationType);
+
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
+        {
+            if (destinationType == typeof(string) && value is Beleska beleska)
+            {
+                return beleska.IdBeleska + " - " + beleska.Naslov;
+            }
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
     }
 }

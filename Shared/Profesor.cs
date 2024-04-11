@@ -8,7 +8,6 @@ using System.Text.Json.Serialization;
 namespace BeleskeBlazor.Shared;
 
 [Table("Profesor")]
-[TypeConverter(typeof(ProfesorTypeConverter))]
 public partial class Profesor
 {
     [Key]
@@ -30,9 +29,9 @@ public partial class Profesor
 }
 
 public record class ProfesorDTO(
-        [property:JsonPropertyName("idProfesor")] int IdProfesor,
+        [property: JsonPropertyName("idProfesor")] int IdProfesor,
         [property: JsonPropertyName("ime")] string Ime,
-        [property:JsonPropertyName("prezime")] string Prezime
+        [property: JsonPropertyName("prezime")] string Prezime
     );
 
 public class ProfesorTypeConverter : TypeConverter

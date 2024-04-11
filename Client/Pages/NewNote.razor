@@ -52,9 +52,11 @@
     ObservableCollection<Cas>? Casovi;
     int SelectedSubjectId;
     int SelectedLectureId;
+    bool IsSelected;
 
     protected override async Task OnInitializedAsync()
     {
+        IsSelected = false;
         Casovi = new ObservableCollection<Cas>();
         Predmeti = await DataService.GetMyData();
     }
@@ -63,6 +65,7 @@
     {
         SelectedSubjectId = id;
         Casovi!.Clear();
+        IsSelected = true;
         GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
         SelectedLectureId = -1;
     }
