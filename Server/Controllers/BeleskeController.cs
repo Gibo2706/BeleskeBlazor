@@ -29,7 +29,9 @@ namespace BeleskeBlazor.Server.Controllers
             return Ok(beleske);
         }
 
+
         [Route("addBeleska")]
+        [HttpPost]
         public async Task<ActionResult> addBeleska(BeleskaDTO bdt)
         {
             if(await _belRepo.insertBeleska(bdt))
