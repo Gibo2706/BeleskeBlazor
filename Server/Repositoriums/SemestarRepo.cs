@@ -16,8 +16,9 @@ namespace BeleskeBlazor.Server.Repositoriums
 
         public async Task<List<Semestar>> GetSemestriPredmeta(int id)
         {
-            List <Semestar> list = _context.Predmet.Find(id)
-                        .DrziUsemestrus
+            List <Semestar> list = _context.Predmet
+                        .SelectMany(p=> p.DrziUsemestrus)
+                        .Where(dus=> dus.IdPredmet==id)
                         .Select(dus => dus.IdSemestarNavigation).ToList<Semestar>();
             return list;
         }
