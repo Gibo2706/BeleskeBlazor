@@ -1,34 +1,32 @@
 ﻿using BeleskeBlazor.Server.Data;
+using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared;
+using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace BeleskeBlazor.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PredmetController : Controller
+    public class PredmetiController : Controller
     {
-        private readonly DataContext _context;
+        private readonly PredmetRepo _predRepo;
 
-        public PredmetController(DataContext context)
+        public PredmetiController(PredmetRepo predmetRepo)
         {
-            _context = context;
-        }
-
-        [Route("getCasoviPredmeta")]
-        public async Task<ActionResult<List<Cas>>> GetCasoviPredmeta(int id)
-        {
-            var list = _context.Predmet.Find(id)
-                        .DrziUsemestrus
-                        .SelectMany(dus=>dus.Cas);
-            return Ok(list);
+            _predRepo = predmetRepo;
         }
         
         public async Task<ActionResult<List<PredmetDTO>>> GetAllPredmeti()
         {
-            var list = await _context.Predmet.Select(o => new PredmetDTO(o.IdPredmet, o.Naziv)).ToListAsync();
+            var list = await _predRepo.GetAllPredmeti();
+
+            List<PredmetDTO> predmeti= list.Select(pr=>
+                                         new PredmetDTO(pr.IdPredmet, pr.Naziv))
+                                        .ToList();
             return Ok(list);
         }
     }

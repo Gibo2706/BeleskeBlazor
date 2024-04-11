@@ -28,13 +28,6 @@ public partial class TagBeleska
     [InverseProperty("TagBeleskas")]
     public virtual Tag IdTagNavigation { get; set; } = null!;
 }
-
-public record class TagBeleskaDTO(
-        [property: JsonPropertyName("idTagBeleska")] int IdTagBeleska,
-        [property: JsonPropertyName("idTag")] int IdTag,
-        [property: JsonPropertyName("idBeleska")] int IdBeleska
-       );
-
 public class TagBeleskaTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

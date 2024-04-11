@@ -27,11 +27,6 @@ public partial class Semestar
     public virtual ICollection<DrziUsemestru> DrziUsemestrus { get; set; } = new List<DrziUsemestru>();
 }
 
-public record class SemestarDTO(
-        [property: JsonPropertyName("idSemestar")] int IdSemestar,
-        [property: JsonPropertyName("broj")] int Broj
-    );
-
 public class SemestarTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

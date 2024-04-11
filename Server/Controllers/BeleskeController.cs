@@ -1,7 +1,10 @@
 ﻿using BeleskeBlazor.Server.Data;
+using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using BeleskeBlazor.Shared.DTO;
+
 
 namespace BeleskeBlazor.Server.Controllers
 {
@@ -9,22 +12,29 @@ namespace BeleskeBlazor.Server.Controllers
     [ApiController]
     public class BeleskeController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly BeleskaRepo _belRepo;
 
-        public BeleskeController(DataContext context)
+        public BeleskeController(BeleskaRepo belRepo)
         {
-            _context = context;
+            _belRepo = belRepo;
         }
-        public async Task<ActionResult<List<Beleska>>> GetAllBeleske()
+        [Route("getBeleskeCasa")]
+        public async Task<ActionResult<List<BeleskaDTO>>> GetBeleskeCasa(int id)
         {
-            var list = await _context.Beleska.ToListAsync();
-            return Ok(list);
+            var list = await _belRepo.GetBeleskeCasa(id);
+
+            List<BeleskaDTO> beleske = list.Select(
+                                        b => new BeleskaDTO(b.IdBeleska, b.RedniBroj, b.Naslov,
+                                        b.Dokument, b.IdStudent, b.IdCas)).ToList();
+            return Ok(beleske);
         }
 
-        [Route("Test")]
-        public async Task<ActionResult<Beleska>> Test()
+        [Route("addBeleska")]
+        public async Task<ActionResult> addBeleska(BeleskaDTO bdt)
         {
-            return Ok("Test");
+            if(await _belRepo.insertBeleska(bdt))
+                return Ok();
+            return BadRequest();
         }
     }
 }

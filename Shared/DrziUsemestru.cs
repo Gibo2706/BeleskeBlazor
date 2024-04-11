@@ -37,14 +37,6 @@ public partial class DrziUsemestru
     [InverseProperty("DrziUsemestrus")]
     public virtual Semestar IdSemestarNavigation { get; set; } = null!;
 }
-
-public record class DrziUsemestruDTO(
-        [property: JsonPropertyName("idDrzi")] int IdDrzi,
-        [property: JsonPropertyName("idProfesor")] int IdProfesor,
-        [property: JsonPropertyName("idSemestar")] int IdSemestar,
-        [property: JsonPropertyName("idPredmet")] int IdPredmet
-    );
-
 public class DrziUSemestruTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

@@ -21,14 +21,6 @@ public partial class Tag
     [InverseProperty("IdTagNavigation")]
     public virtual ICollection<TagBeleska> TagBeleskas { get; set; } = new List<TagBeleska>();
 }
-
-
-public record class TagDTO(
-       [property: JsonPropertyName("idTag")] int IdTag,
-          [property: JsonPropertyName("naziv")] string Naziv
-       );
-
-
 public class TagTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

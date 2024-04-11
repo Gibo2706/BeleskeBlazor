@@ -35,15 +35,6 @@ public partial class Beleska
     [InverseProperty("Beleskas")]
     public virtual Student? IdStudentNavigation { get; set; }
 
-    public record class BeleskaDTO(
-            [property: JsonPropertyName("idBeleska")] int IdBeleska,
-            [property: JsonPropertyName("redniBroj")] int RedniBroj,
-            [property: JsonPropertyName("naslov")] string Naslov,
-            [property: JsonPropertyName("dokument")] byte[] Dokument,
-            [property: JsonPropertyName("idStudent")] int IdStudent,
-            [property: JsonPropertyName("idCas")] int IdCas
-        );
-
     public class BeleskaTypeConverter : TypeConverter
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

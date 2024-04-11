@@ -1,5 +1,7 @@
 ﻿using BeleskeBlazor.Server.Data;
+using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared;
+using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +11,21 @@ namespace BeleskeBlazor.Server.Controllers
     [ApiController]
     public class CasController : Controller
     {
-        private readonly DataContext _context;
+        private readonly CasRepo _casRepo;
        
-        public CasController(DataContext context) { 
-            _context = context;
+        public CasController(CasRepo casRepo) {
+            _casRepo = casRepo;
         }
-
-        public async Task<ActionResult<List<Cas>>> GetAllCas()
+        [Route("getCasoviPredmetaUSemestru")]
+        public async Task<ActionResult<List<CasDTO>>> GetCasoviPredmetaUSemestru(int semId, int predId)
         {
-            var list = await _context.Cas.ToListAsync();
-            return Ok(list);
+            List<Cas> list = await _casRepo.GetCasoviPredmetaUSemestru(semId, predId);
+
+            List<CasDTO> casovi = list.Select(c =>
+                                  new CasDTO(c.IdCas, c.RedniBroj, c.Datum, c.VremePocetka, c.VremeKraja))
+                                .ToList();
+
+            return Ok(casovi);
         }
     }
 }

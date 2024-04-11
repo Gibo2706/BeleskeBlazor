@@ -35,15 +35,6 @@ public partial class Cas
     public virtual DrziUsemestru IdDrziNavigation { get; set; } = null!;
 }
 
-public record class CasDTO(
-        [property:JsonPropertyName("idCas")] int IdCas,
-        [property: JsonPropertyName("redniBroj")] int RedniBroj,
-        [property:JsonPropertyName("datum")] DateOnly Datum,
-        [property:JsonPropertyName("vremePocetka")] DateTime VremePocetka,
-        [property:JsonPropertyName("vremeKraja")] DateTime VremeKraja,
-        [property:JsonPropertyName("idDrzi")] int IdDrzi
-       );
-
 public class CasTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

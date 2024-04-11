@@ -27,13 +27,6 @@ public partial class Profesor
     [InverseProperty("IdProfesorNavigation")]
     public virtual ICollection<DrziUsemestru> DrziUsemestrus { get; set; } = new List<DrziUsemestru>();
 }
-
-public record class ProfesorDTO(
-        [property: JsonPropertyName("idProfesor")] int IdProfesor,
-        [property: JsonPropertyName("ime")] string Ime,
-        [property: JsonPropertyName("prezime")] string Prezime
-    );
-
 public class ProfesorTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

@@ -28,12 +28,6 @@ public partial class Predmet
     }
 }
 
-public record class PredmetDTO(
-    [property: JsonPropertyName("idPredmet")] int IdPredmet,
-    [property: JsonPropertyName("naziv")] string Naziv
-    );
-
-
 public class PredmetTypeConverter : TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
