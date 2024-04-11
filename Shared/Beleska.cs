@@ -1,12 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 
 namespace BeleskeBlazor.Shared;
 
 [Table("Beleska")]
-[TypeConverter(typeof(BeleskaTypeConverter))]
 public partial class Beleska
 {
     [Key]
@@ -22,7 +22,7 @@ public partial class Beleska
     public byte[] Dokument { get; set; } = null!;
 
     [Column("idStudent")]
-    public int IdStudent { get; set; }
+    public int? IdStudent { get; set; }
 
     [Column("idCas")]
     public int IdCas { get; set; }
@@ -33,34 +33,8 @@ public partial class Beleska
 
     [ForeignKey("IdStudent")]
     [InverseProperty("Beleskas")]
-    public virtual Student IdStudentNavigation { get; set; } = null!;
-}
+    public virtual Student? IdStudentNavigation { get; set; }
 
-public class BeleskaTypeConverter : TypeConverter
-{
-    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-    {
-        // Check if conversion from string is supported
-        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
-    }
-
-    public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
-    {
-        if (value is string stringValue)
-        {
-
-            return new Beleska();
-        }
-
-        return base.ConvertFrom(context, culture, value);
-    }
-
-    public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
-    {
-        if (destinationType == typeof(string) && value is Beleska beleska)
-        {
-            return beleska.IdBeleska + " - " + beleska.Naslov;
-        }
-        return base.ConvertTo(context, culture, value, destinationType);
-    }
+    [InverseProperty("IdBeleskaNavigation")]
+    public virtual ICollection<TagBeleska> TagBeleskas { get; set; } = new List<TagBeleska>();
 }
