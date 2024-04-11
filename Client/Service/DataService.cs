@@ -1,10 +1,9 @@
-﻿using System.Net.Http.Json;
+﻿using BeleskeBlazor.Shared.DTO;
 using System.Text.Json;
-using BeleskeBlazor.Shared;
 
 namespace BeleskeBlazor.Client.Service
 {
-    
+
     public class DataService
     {
         private readonly HttpClient _httpClient;
@@ -23,10 +22,11 @@ namespace BeleskeBlazor.Client.Service
 
             if (response.IsSuccessStatusCode)
             {
+
                 await using Stream responseStream = await response.Content.ReadAsStreamAsync();
-                data = await JsonSerializer.DeserializeAsync<List<PredmetDTO>?>(responseStream);
-                Console.WriteLine(await response.Content.ReadAsStringAsync());
                 Console.WriteLine("ID: " + data.First().IdPredmet + " NAZIV:" + data.First().Naziv);
+                data = await JsonSerializer.DeserializeAsync<List<PredmetDTO>?>(responseStream);
+
                 responseStream.Close();
             }
 

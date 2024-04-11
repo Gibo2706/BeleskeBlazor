@@ -7,9 +7,11 @@
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="manifest.json" rel="manifest" />
-    
+
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="BeleskeBlazor.Client.styles.css" rel="stylesheet" /> -->
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
 </head>
 
 <body>
@@ -22,6 +24,8 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+
 </body>
 
 </html>

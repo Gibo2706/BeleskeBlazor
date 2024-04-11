@@ -1,10 +1,14 @@
 ﻿@page "/create-note"
-@using BeleskeBlazor.Shared
+@using BeleskeBlazor.Shared.DTO
 @using System.Collections.ObjectModel
 @using BeleskeBlazor.Client.Service
+@using Radzen.Blazor
+@using Radzen
+@using Radzen.Blazor.Rendering
+
 @inject DataService DataService
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 
 <div class="container mt-5 text-center">
     <h1>Welcome to your Notes App!</h1>
@@ -12,83 +16,148 @@
     <div class="mt-3">
         <form @onsubmit="()=> {}">
             <div class="mb-3">
+                @if(Predmeti != null && Predmeti.Count > 0){
                 <label for="subjectSelect" class="form-label">Subject:</label>
                 <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
-                    <option selected>Choose...</option>
-                    @if(Predmeti != null && Predmeti.Count > 0){
                         @foreach (var subject in Predmeti)
                         {
                             <option value="@subject.IdPredmet">@subject.Naziv</option>
                         }
-                    }else{
-                            <option value="-1">No subjects available</option>
-                    }
                 </select>
+                }
+
             </div>
             <div class="mb-3">
-                <label for="lectureSelect" class="form-label">Lecture:</label>
-                <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
-                    <option selected>Choose...</option>
-                    @if (Casovi != null && Casovi.Count > 0)
-                    {
-                        @foreach (var subject in Casovi)
+                @if (Semestri != null && Semestri.Count > 0){
+                <label for="lectureSelect" class="form-label">Semestar:</label>
+                <select class="form-select" id="subjectSelect" @bind:get="SelectedSemestarId" @bind:set="SemestarInput">
+                        @foreach (var sem in Semestri)
                         {
-                            <option value="@subject.IdCas">@subject.RedniBroj .</option>
+                            <option value="@sem.IdSemestar">@sem.Broj </option>
                         }
                     }
-                    else
-                    {
-                        <option value="-1">No lectures available for selected subject</option>
-                    }
                 </select>
+                }
             </div>
-            <button type="submit" class="btn btn-primary">Create Note</button>
+            <div class="mb-3">
+                @if (Casovi != null && Casovi.Count > 0){
+                    <label for="lectureSelect" class="form-label">Lecture:</label>
+                    <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
+                        <option selected>Choose...</option>
+                    
+                            @foreach (var subject in Casovi)
+                            {
+                                <option value="@subject.IdCas">@subject.RedniBroj - @subject.Datum</option>
+                            }
+                    </select>
+                }
+            </div>
+            @if (SelectedLectureId != -1 && SelectedSubjectId != -1)
+            {
+                <div class="mb-3">
+                    <label for="noteTitle" class="form-label">Note Title:</label>
+                    <input type="text" class="form-control" id="noteTitle" />
+                </div>
+                <div class="mb-3">
+                    <label for="noteContent" class="form-label">Note Content:</label>
+                    <RadzenHtmlEditor  @bind-Value="@content">
+                        <RadzenHtmlEditorUndo />
+                        <RadzenHtmlEditorRedo />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorBold />
+                        <RadzenHtmlEditorItalic />
+                        <RadzenHtmlEditorUnderline />
+                        <RadzenHtmlEditorStrikeThrough />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorAlignLeft />
+                        <RadzenHtmlEditorAlignCenter />
+                        <RadzenHtmlEditorAlignRight />
+                        <RadzenHtmlEditorJustify />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorIndent />
+                        <RadzenHtmlEditorOutdent />
+                        <RadzenHtmlEditorUnorderedList />
+                        <RadzenHtmlEditorOrderedList />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorColor />
+                        <RadzenHtmlEditorBackground />
+                        <RadzenHtmlEditorRemoveFormat />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorSubscript />
+                        <RadzenHtmlEditorSuperscript />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorFontName />
+                        <RadzenHtmlEditorFontSize />
+                        <RadzenHtmlEditorFormatBlock />
+                    </RadzenHtmlEditor>
+                </div>
+                <input type="hidden" id="studentId"  />
+                <button type="submit" class="btn btn-primary">Create Note</button>
+            }
         </form>
     </div>
 </div>
 
 @code {
     List<PredmetDTO>? Predmeti;
-    ObservableCollection<Cas>? Casovi;
-    int SelectedSubjectId;
-    int SelectedLectureId;
+    ObservableCollection<CasDTO>? Casovi;
+    ObservableCollection<SemestarDTO>? Semestri;
+    int SelectedSubjectId = -1;
+    int SelectedLectureId = -1;
+    int SelectedSemestarId = -1;
     bool IsSelected;
+    string content = "";
 
     protected override async Task OnInitializedAsync()
     {
+        content = "";
         IsSelected = false;
-        Casovi = new ObservableCollection<Cas>();
+        Casovi = new ObservableCollection<CasDTO>();
+        Semestri = new ObservableCollection<SemestarDTO>();
         Predmeti = await DataService.GetMyData();
+
     }
 
     private void SubjectInput(int id)
     {
         SelectedSubjectId = id;
-        Casovi!.Clear();
+        Semestri!.Clear();
         IsSelected = true;
-        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
+        GetSemestarsForSubject(id).ForEach(x => Semestri.Add(x));
+        SelectedLectureId = -1;
+        SelectedSemestarId = -1;
+    }
+
+    private void SemestarInput(int id)
+    {
+        SelectedSemestarId = id;
+        Casovi!.Clear();
+        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x)); 
         SelectedLectureId = -1;
     }
 
     private void LectureInput(int id)
     {
         SelectedLectureId = id;
+        GetLecturesForSubject(id).ForEach(x => Casovi.Add(x));
     }
 
-    private List<Cas> GetLecturesForSubject(int subjectId)
+    private List<CasDTO> GetLecturesForSubject(int subjectId)
     {
-        return new List<Cas>()
+        return new List<CasDTO>()
         {
-            new Cas()
-            {
-                 IdCas = 1,
-                 RedniBroj = 1
-            },
-            new Cas()
-            {
-                 IdCas = 2,
-                 RedniBroj = 2
-            },
+            new CasDTO(1,1,new DateOnly(), new DateTime(), new DateTime()),
+            new CasDTO(2,2,new DateOnly(), new DateTime(), new DateTime()),
+        };
+    }
+
+    private List<SemestarDTO> GetSemestarsForSubject(int subjectId)
+    {
+        return new List<SemestarDTO>()
+        {
+            new SemestarDTO(1, "2023/2024", 1),
+            new SemestarDTO(2, "2023/2024", 2),
+            new SemestarDTO(3, "2024/2025", 3),
         };
     }
 }
