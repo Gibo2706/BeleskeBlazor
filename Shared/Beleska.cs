@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -6,6 +7,7 @@ using System.Globalization;
 namespace BeleskeBlazor.Shared;
 
 [Table("Beleska")]
+[Index("RedniBroj", "IdStudent", "IdCas", Name = "Beleska_ix1", IsUnique = true)]
 public partial class Beleska
 {
     [Key]
@@ -33,6 +35,9 @@ public partial class Beleska
     [ForeignKey("IdStudent")]
     [InverseProperty("Beleskas")]
     public virtual Student? IdStudentNavigation { get; set; }
+
+    [InverseProperty("IdBeleskaNavigation")]
+    public virtual ICollection<TagBeleska> TagBeleskas { get; set; } = new List<TagBeleska>();
 
     public class BeleskaTypeConverter : TypeConverter
     {

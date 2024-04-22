@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -6,6 +7,7 @@ using System.Text.Json.Serialization;
 namespace BeleskeBlazor.Shared;
 
 [TypeConverter(typeof(CasTypeConverter))]
+[Index("RedniBroj", "IdDrzi", Name = "Cas_ix1", IsUnique = true)]
 public partial class Cas
 {
     [Key]
