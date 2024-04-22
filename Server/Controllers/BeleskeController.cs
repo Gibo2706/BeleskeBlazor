@@ -40,7 +40,7 @@ namespace BeleskeBlazor.Server.Controllers
         public async Task<ActionResult> GetBeleskeDinamicno(int? predmet, int? brCasa,
                                                             string? imeAutora, string? prezimeAutora,
                                                             DateOnly? datumOd, DateOnly? datumDo,
-                                                            string? naslov, int[] idTagovi)
+                                                            string? naslov, int[]? idTagovi)
         {
             var list = await _belRepo.GetBeleskeDinamicno(predmet, brCasa, imeAutora, prezimeAutora,
                                       datumOd, datumDo, naslov, idTagovi);

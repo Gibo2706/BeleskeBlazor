@@ -25,9 +25,9 @@ namespace BeleskeBlazor.Server.Repositoriums
                 b.IdCas = bdt.IdCas;
 
                 b.RedniBroj = _context.Beleska
-                                .Where(b=> b.IdStudent==bdt.IdStudent && 
-                                        b.IdCas==bdt.IdCas)
-                                .Count() +1;//Redni broj pocinje od 1.
+                                .Where(b => b.IdStudent == bdt.IdStudent &&
+                                        b.IdCas == bdt.IdCas)
+                                .Count() + 1;//Redni broj pocinje od 1.
 
                 _context.Beleska.Add(b);
                 _context.SaveChanges();
@@ -47,10 +47,10 @@ namespace BeleskeBlazor.Server.Repositoriums
             return list;
         }
 
-        public async Task<List<Beleska>> GetBeleskeDinamicno(int? predmet, int? brCasa, 
+        public async Task<List<Beleska>> GetBeleskeDinamicno(int? predmet, int? brCasa,
                                                             string? imeAutora, string? prezimeAutora,
-                                                            DateOnly? datumOd, DateOnly? datumDo, 
-                                                            string? naslov, int[] idTagovi)
+                                                            DateOnly? datumOd, DateOnly? datumDo,
+                                                            string? naslov, int[]? idTagovi)
         {
             var dinamicniUpit = _context.Beleska.AsQueryable();
 
@@ -64,20 +64,20 @@ namespace BeleskeBlazor.Server.Repositoriums
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
                                     b.IdStudentNavigation.Ime
                                     .StartsWith(imeAutora, StringComparison.OrdinalIgnoreCase));
-            
+
             if (prezimeAutora != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
                                     b.IdStudentNavigation.Prezime
                                     .StartsWith(prezimeAutora, StringComparison.OrdinalIgnoreCase));
-           
-            if(datumOd != null)
+
+            if (datumOd != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.Datum >= datumOd);
 
             if (datumOd != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.Datum <= datumDo);
 
-            if(naslov!=null)
-                dinamicniUpit = dinamicniUpit.Where(b => 
+            if (naslov != null)
+                dinamicniUpit = dinamicniUpit.Where(b =>
                                     b.Naslov.StartsWith(naslov, StringComparison.OrdinalIgnoreCase));
 
             if (idTagovi != null && idTagovi.Length != 0)
