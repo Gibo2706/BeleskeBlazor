@@ -1,0 +1,217 @@
+﻿@page "/view-all-notes"
+@using BeleskeBlazor.Shared.DTO
+@using System.Collections.ObjectModel
+@using BeleskeBlazor.Client.Service
+@using Radzen.Blazor
+@using Radzen
+@using Radzen.Blazor.Rendering
+@using System.Text
+@inject DataService DataService
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="mt-5 mb-4">View All Notes</h2>
+            <form @onsubmit="() => {}">
+                 <div class="mb-3">
+                    @if (Predmeti != null && Predmeti.Count > 0)
+                    {
+                        <label for="subjectSelect" class="form-label">Subject:</label>
+                        <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
+                            <option selected>Choose...</option>
+                            @foreach (var subject in Predmeti)
+                            {
+                                 <option value="@subject.IdPredmet">@subject.Naziv</option>
+                            }
+                        </select>
+                    }
+
+            </div>
+            <div class="mb-3">
+                    @if (Semestri != null && Semestri.Count > 0)
+                    {
+                        <label for="lectureSelect" class="form-label">Semestar:</label>
+                        <select class="form-select" id="subjectSelect" @bind:get="SelectedSemestarId" @bind:set="SemestarInput">
+                            @foreach (var sem in Semestri)
+                            {
+                                <option value="@sem.IdSemestar">@sem.Broj </option>
+                            }
+                         </select>
+                    }
+            </div>
+            <div class="mb-3">
+                    @if (Casovi != null && Casovi.Count > 0)
+                    {
+                        <label for="lectureSelect" class="form-label">Lecture:</label>
+                        <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
+                            <option selected>Choose...</option>
+                                @foreach (var subject in Casovi)
+                                {
+                                    <option value="@subject.IdCas">@subject.RedniBroj - @subject.Datum</option>
+                                }
+                        </select>
+                    }
+            </div>
+                <div class="form-group">
+                    <label for="authorSelect">Author's name:</label>
+                    <input type="text" class="form-control" id="authorName" />
+                </div>
+                <div class="form-group">
+                    <label for="authorSelect">Author's surname:</label>
+                    <input type="text" class="form-control" id="authorName" />
+                </div>
+                <div class="form-group">
+                    <label for="titleSearch">Title:</label>
+                    <input type="text" class="form-control" id="titleSearch" />
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-primary" @onclick="FilterNotes">Filter Notes</button>
+            </form>
+        </div>
+    </div>
+    <!-- Note cards -->
+    @if(Beleske != null && Beleske.Count > 0)
+    {
+        <div class="row justify-content-center mt-4">
+            @foreach (var note in Beleske)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">@note.Naslov</h5>
+                            <p class="card-text">Redni broj: @note.RedniBroj</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" @onclick="() => OpenNoteDetail(note)">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+<!-- Modal for note details -->
+@if (selectedNote != null)
+{
+    <div class="modal fade show" id="noteDetailsModal" tabindex="-1" role="dialog" aria-labelledby="noteDetailsModalLabel" style="display: block; backdrop-filter: blur(5px)">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="noteDetailsModalLabel">@selectedNote.Naslov</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                        <RadzenHtmlEditor @ref="editor" @bind-Value="@content">
+                            <RadzenHtmlEditorUndo />
+                            <RadzenHtmlEditorRedo />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorBold />
+                            <RadzenHtmlEditorItalic />
+                            <RadzenHtmlEditorUnderline />
+                            <RadzenHtmlEditorStrikeThrough />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorAlignLeft />
+                            <RadzenHtmlEditorAlignCenter />
+                            <RadzenHtmlEditorAlignRight />
+                            <RadzenHtmlEditorJustify />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorIndent />
+                            <RadzenHtmlEditorOutdent />
+                            <RadzenHtmlEditorUnorderedList />
+                            <RadzenHtmlEditorOrderedList />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorColor />
+                            <RadzenHtmlEditorBackground />
+                            <RadzenHtmlEditorRemoveFormat />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorSubscript />
+                            <RadzenHtmlEditorSuperscript />
+                            <RadzenHtmlEditorSeparator />
+                            <RadzenHtmlEditorFontName />
+                            <RadzenHtmlEditorFontSize />
+                            <RadzenHtmlEditorFormatBlock />
+                        </RadzenHtmlEditor>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private RadzenHtmlEditor editor;
+    private string content = "";
+    private List<PredmetDTO>? Predmeti;
+    private ObservableCollection<CasDTO>? Casovi;
+    private ObservableCollection<SemestarDTO>? Semestri;
+    private ObservableCollection<BeleskaDTO>? Beleske;
+    int SelectedSubjectId = -1;
+    int SelectedLectureId = -1;
+    int SelectedSemestarId = -1;
+    bool IsSelected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsSelected = false;
+        Casovi = new ObservableCollection<CasDTO>();
+        Semestri = new ObservableCollection<SemestarDTO>();
+        Predmeti = await DataService.GetAllSubjects();
+        Beleske = new ObservableCollection<BeleskaDTO>();
+        List<BeleskaDTO> notes = await DataService.GetAllNotesForLecture(1);
+        notes.ForEach(note => Beleske.Add(note));
+
+    }
+
+    private async Task SubjectInput(int id)
+    {
+        SelectedSubjectId = id;
+        Semestri!.Clear();
+        IsSelected = true;
+        // (await GetSemestarsAsync(SelectedSubjectId)).ForEach(x => Semestri.Add(x));
+        SelectedLectureId = -1;
+        SelectedSemestarId = -1;
+    }
+
+    private async Task SemestarInput(int id)
+    {
+        SelectedSemestarId = id;
+        Casovi!.Clear();
+        // (await GetLecturesAsync(SelectedSubjectId, id)).ForEach(x => Casovi.Add(x));
+        SelectedLectureId = -1;
+    }
+
+    private Task<List<SemestarDTO>> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
+
+    private Task<List<CasDTO>> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
+
+    private void LectureInput(int id)
+    {
+        SelectedLectureId = id;
+    }
+    private BeleskaDTO selectedNote;
+
+
+    protected override void OnInitialized()
+    {
+        FilterNotes();
+    }
+
+    private void FilterNotes()
+    {
+        // Filter notes based on selected subject and lecture
+        // filteredNotes = notes.Where(note => note.Subject == selectedSubject && note.Lecture == selectedLecture).ToList();
+    }
+
+    private void OpenNoteDetail(BeleskaDTO note)
+    {
+        content = Encoding.UTF8.GetString(note.Dokument);
+        selectedNote = note;
+    }
+
+    private void CloseModal()
+    {
+        selectedNote = null;
+    }
+}
+

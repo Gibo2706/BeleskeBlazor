@@ -1,4 +1,5 @@
 ﻿using BeleskeBlazor.Shared.DTO;
+using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace BeleskeBlazor.Client.Service
@@ -57,6 +58,44 @@ namespace BeleskeBlazor.Client.Service
             {
                 await using Stream responseStream = await response.Content.ReadAsStreamAsync();
                 data = await JsonSerializer.DeserializeAsync<List<CasDTO>?>(responseStream);
+
+                responseStream.Close();
+            }
+
+            return data;
+        }
+
+        public async Task<bool> SaveBeleska(String naslov, int? idStudent, byte[] dokument, int redniBroj, int idCas)
+        {
+            BeleskaDTO novaBeleska = new BeleskaDTO
+                (
+                    0,
+                    redniBroj,
+                    naslov,
+                    dokument,
+                    idStudent,
+                    idCas
+                );
+
+            bool saved = false;
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska", novaBeleska);
+            if (response.IsSuccessStatusCode)
+            {
+                saved = true;
+            }
+            return saved;
+        }
+
+        public async Task<List<BeleskaDTO>?> GetAllNotesForLecture(int idCas)
+        {
+            List<BeleskaDTO?> data = new List<BeleskaDTO?>();
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7241/api/beleske/getBeleskeCasa?id=" + idCas);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Uspesno - " + response.ToString());
+                await using Stream responseStream = await response.Content.ReadAsStreamAsync();
+                data = await JsonSerializer.DeserializeAsync<List<BeleskaDTO>?>(responseStream);
 
                 responseStream.Close();
             }
