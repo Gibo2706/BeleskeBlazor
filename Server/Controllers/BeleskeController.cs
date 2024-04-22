@@ -35,5 +35,20 @@ namespace BeleskeBlazor.Server.Controllers
                 return Ok();
             return BadRequest();
         }
+
+        [Route("getBeleskeDinamicno")]
+        public async Task<ActionResult> GetBeleskeDinamicno(int? predmet, int? brCasa,
+                                                            string? imeAutora, string? prezimeAutora,
+                                                            DateOnly? datumOd, DateOnly? datumDo,
+                                                            string? naslov, int[] idTagovi)
+        {
+            var list = await _belRepo.GetBeleskeDinamicno(predmet, brCasa, imeAutora, prezimeAutora,
+                                      datumOd, datumDo, naslov, idTagovi);
+
+            List<BeleskaDTO> beleske = list.Select(
+                                        b => new BeleskaDTO(b.IdBeleska, b.RedniBroj, b.Naslov,
+                                        b.Dokument, b.IdStudent, b.IdCas)).ToList();
+            return Ok(beleske);
+        }
     }
 }
