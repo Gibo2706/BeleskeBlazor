@@ -12,22 +12,22 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <h2 class="mt-5 mb-4">View All Notes</h2>
-            <form @onsubmit="() => {}">
-                 <div class="mb-3">
+            <form @onsubmit="FilterNotes">
+                <div class="mb-3">
                     @if (Predmeti != null && Predmeti.Count > 0)
                     {
                         <label for="subjectSelect" class="form-label">Subject:</label>
-                        <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
+                        <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput">
                             <option selected>Choose...</option>
                             @foreach (var subject in Predmeti)
                             {
-                                 <option value="@subject.IdPredmet">@subject.Naziv</option>
+                                <option value="@subject.IdPredmet">@subject.Naziv</option>
                             }
                         </select>
                     }
 
-            </div>
-            <div class="mb-3">
+                </div>
+                <div class="mb-3">
                     @if (Semestri != null && Semestri.Count > 0)
                     {
                         <label for="lectureSelect" class="form-label">Semestar:</label>
@@ -36,33 +36,33 @@
                             {
                                 <option value="@sem.IdSemestar">@sem.Broj </option>
                             }
-                         </select>
+                        </select>
                     }
-            </div>
-            <div class="mb-3">
+                </div>
+                <div class="mb-3">
                     @if (Casovi != null && Casovi.Count > 0)
                     {
                         <label for="lectureSelect" class="form-label">Lecture:</label>
                         <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
                             <option selected>Choose...</option>
-                                @foreach (var subject in Casovi)
-                                {
-                                    <option value="@subject.IdCas">@subject.RedniBroj - @subject.Datum</option>
-                                }
+                            @foreach (var subject in Casovi)
+                            {
+                                <option value="@subject.RedniBroj">@subject.RedniBroj - @subject.Datum</option>
+                            }
                         </select>
                     }
-            </div>
-                <div class="form-group">
-                    <label for="authorSelect">Author's name:</label>
-                    <input type="text" class="form-control" id="authorName" />
                 </div>
                 <div class="form-group">
-                    <label for="authorSelect">Author's surname:</label>
-                    <input type="text" class="form-control" id="authorName" />
+                    <label for="authorName">Author's name:</label>
+                    <input type="text" class="form-control" id="authorName" @bind="authorName" />
+                </div>
+                <div class="form-group">
+                    <label for="authorSurname">Author's surname:</label>
+                    <input type="text" class="form-control" id="authorSurname" @bind="authorSurname" />
                 </div>
                 <div class="form-group">
                     <label for="titleSearch">Title:</label>
-                    <input type="text" class="form-control" id="titleSearch" />
+                    <input type="text" class="form-control" id="titleSearch" @bind="title" />
                 </div>
                 <hr>
                 <button type="submit" class="btn btn-primary" @onclick="FilterNotes">Filter Notes</button>
@@ -70,7 +70,7 @@
         </div>
     </div>
     <!-- Note cards -->
-    @if(Beleske != null && Beleske.Count > 0)
+    @if (Beleske != null && Beleske.Count > 0)
     {
         <div class="row justify-content-center mt-4">
             @foreach (var note in Beleske)
@@ -78,8 +78,8 @@
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">@note.Naslov</h5>
-                            <p class="card-text">Redni broj: @note.RedniBroj</p>
+                            <h5 class="card-title text-center">@note.Naslov</h5>
+                            <p class="card-text">@note.cas</p>
                         </div>
                         <div class="card-footer">
                             <button class="btn btn-primary" @onclick="() => OpenNoteDetail(note)">View Details</button>
@@ -103,36 +103,36 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="CloseModal"></button>
                 </div>
                 <div class="modal-body">
-                        <RadzenHtmlEditor @ref="editor" @bind-Value="@content">
-                            <RadzenHtmlEditorUndo />
-                            <RadzenHtmlEditorRedo />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorBold />
-                            <RadzenHtmlEditorItalic />
-                            <RadzenHtmlEditorUnderline />
-                            <RadzenHtmlEditorStrikeThrough />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorAlignLeft />
-                            <RadzenHtmlEditorAlignCenter />
-                            <RadzenHtmlEditorAlignRight />
-                            <RadzenHtmlEditorJustify />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorIndent />
-                            <RadzenHtmlEditorOutdent />
-                            <RadzenHtmlEditorUnorderedList />
-                            <RadzenHtmlEditorOrderedList />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorColor />
-                            <RadzenHtmlEditorBackground />
-                            <RadzenHtmlEditorRemoveFormat />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorSubscript />
-                            <RadzenHtmlEditorSuperscript />
-                            <RadzenHtmlEditorSeparator />
-                            <RadzenHtmlEditorFontName />
-                            <RadzenHtmlEditorFontSize />
-                            <RadzenHtmlEditorFormatBlock />
-                        </RadzenHtmlEditor>
+                    <RadzenHtmlEditor @ref="editor" @bind-Value="@content">
+                        <RadzenHtmlEditorUndo />
+                        <RadzenHtmlEditorRedo />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorBold />
+                        <RadzenHtmlEditorItalic />
+                        <RadzenHtmlEditorUnderline />
+                        <RadzenHtmlEditorStrikeThrough />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorAlignLeft />
+                        <RadzenHtmlEditorAlignCenter />
+                        <RadzenHtmlEditorAlignRight />
+                        <RadzenHtmlEditorJustify />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorIndent />
+                        <RadzenHtmlEditorOutdent />
+                        <RadzenHtmlEditorUnorderedList />
+                        <RadzenHtmlEditorOrderedList />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorColor />
+                        <RadzenHtmlEditorBackground />
+                        <RadzenHtmlEditorRemoveFormat />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorSubscript />
+                        <RadzenHtmlEditorSuperscript />
+                        <RadzenHtmlEditorSeparator />
+                        <RadzenHtmlEditorFontName />
+                        <RadzenHtmlEditorFontSize />
+                        <RadzenHtmlEditorFormatBlock />
+                    </RadzenHtmlEditor>
                 </div>
             </div>
         </div>
@@ -149,17 +149,18 @@
     int SelectedSubjectId = -1;
     int SelectedLectureId = -1;
     int SelectedSemestarId = -1;
-    bool IsSelected;
+    string authorName = "";
+    string authorSurname = "";
+    string title = "";
 
     protected override async Task OnInitializedAsync()
     {
-        IsSelected = false;
         Casovi = new ObservableCollection<CasDTO>();
         Semestri = new ObservableCollection<SemestarDTO>();
         Predmeti = await DataService.GetAllSubjects();
         Beleske = new ObservableCollection<BeleskaDTO>();
-        List<BeleskaDTO> notes = await DataService.GetAllNotesForLecture(1);
-        notes.ForEach(note => Beleske.Add(note));
+        //List<BeleskaDTO>? notes = await DataService.GetAllNotesForLecture(1);
+        //notes?.ForEach(note => Beleske.Add(note));
 
     }
 
@@ -167,8 +168,7 @@
     {
         SelectedSubjectId = id;
         Semestri!.Clear();
-        IsSelected = true;
-        // (await GetSemestarsAsync(SelectedSubjectId)).ForEach(x => Semestri.Add(x));
+        (await GetSemestarsAsync(SelectedSubjectId))?.ForEach(x => Semestri.Add(x));
         SelectedLectureId = -1;
         SelectedSemestarId = -1;
     }
@@ -177,13 +177,13 @@
     {
         SelectedSemestarId = id;
         Casovi!.Clear();
-        // (await GetLecturesAsync(SelectedSubjectId, id)).ForEach(x => Casovi.Add(x));
+        (await GetLecturesAsync(SelectedSubjectId, id))?.ForEach(x => Casovi.Add(x));
         SelectedLectureId = -1;
     }
 
-    private Task<List<SemestarDTO>> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
+    private Task<List<SemestarDTO>?> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
 
-    private Task<List<CasDTO>> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
+    private Task<List<CasDTO>?> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
 
     private void LectureInput(int id)
     {
@@ -197,10 +197,19 @@
         FilterNotes();
     }
 
-    private void FilterNotes()
+    private async Task FilterNotes()
     {
-        // Filter notes based on selected subject and lecture
-        // filteredNotes = notes.Where(note => note.Subject == selectedSubject && note.Lecture == selectedLecture).ToList();
+        List<BeleskaDTO>? res = await DataService.FilterNotesBy(
+                                                        predmet: SelectedSubjectId,
+                                                        brCasa: SelectedLectureId,
+                                                        imeAutora: authorName,
+                                                        prezimeAutora: authorSurname,
+                                                        naslov: title,
+                                                        idTagovi: null,
+                                                        datumDo: null,
+                                                        datumOd: null);
+        Beleske?.Clear();
+        res?.ForEach(note => Beleske?.Add(note));
     }
 
     private void OpenNoteDetail(BeleskaDTO note)
