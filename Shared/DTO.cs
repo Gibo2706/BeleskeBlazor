@@ -21,7 +21,8 @@ namespace BeleskeBlazor.Shared
             [property: JsonPropertyName("vremePocetka")] DateTime VremePocetka,
             [property: JsonPropertyName("vremeKraja")] DateTime VremeKraja,
             [property: JsonPropertyName("profesor")] ProfesorDTO profesor,
-            [property: JsonPropertyName("semestar")] SemestarDTO semestar
+            [property: JsonPropertyName("semestar")] SemestarDTO semestar,
+            [property: JsonPropertyName("predmet")] PredmetDTO predmet
         );
         /*public record class DrziUsemestruDTO(
             [property: JsonPropertyName("idDrzi")] int IdDrzi,

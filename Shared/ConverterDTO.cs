@@ -42,7 +42,8 @@ namespace BeleskeBlazor.Shared
             return new CasDTO(cas.IdCas, cas.RedniBroj, cas.Datum, 
                                 cas.VremePocetka, cas.VremeKraja,
                                 getDTO(cas.IdDrziNavigation.IdProfesorNavigation), 
-                                getDTO(cas.IdDrziNavigation.IdSemestarNavigation));
+                                getDTO(cas.IdDrziNavigation.IdSemestarNavigation),
+                                getDTO(cas.IdDrziNavigation.IdPredmetNavigation));
         }
 
         public static ProfesorDTO getDTO(Profesor profesor)
