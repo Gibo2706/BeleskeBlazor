@@ -1,4 +1,5 @@
 ﻿using BeleskeBlazor.Server.Repositoriums;
+using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,8 +20,8 @@ namespace BeleskeBlazor.Server.Controllers
         {
             var list = await _predRepo.GetAllPredmeti();
 
-            List<PredmetDTO> predmeti = list.Select(pr =>
-                                         new PredmetDTO(pr.IdPredmet, pr.Naziv))
+            List<PredmetDTO> predmeti = list
+                                        .Select(pr => ConverterDTO.getDTO(pr))
                                         .ToList();
             return Ok(predmeti);
         }

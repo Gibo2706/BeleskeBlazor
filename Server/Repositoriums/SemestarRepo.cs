@@ -14,12 +14,19 @@ namespace BeleskeBlazor.Server.Repositoriums
             _context = context;
         }
 
+        public async Task<List<Semestar>> GetAllSemestri()
+        {
+            List<Semestar> list = _context.Semestar.ToList();
+            return list;
+        }
+
         public async Task<List<Semestar>> GetSemestriPredmeta(int id)
         {
             List <Semestar> list = _context.Predmet
                         .SelectMany(p=> p.DrziUsemestrus)
                         .Where(dus=> dus.IdPredmet==id)
-                        .Select(dus => dus.IdSemestarNavigation).ToList<Semestar>();
+                        .Select(dus => dus.IdSemestarNavigation)
+                        .ToList<Semestar>();
             return list;
         }
     }

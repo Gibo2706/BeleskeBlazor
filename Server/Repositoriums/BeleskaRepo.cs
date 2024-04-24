@@ -14,19 +14,19 @@ namespace BeleskeBlazor.Server.Repositoriums
             _context = context;
         }
 
-        public async Task<bool> insertBeleska(BeleskaDTO bdt)
+        public async Task<bool> insertBeleska(BeleskaDTO bdt, int? student)
         {
             try
             {
                 Beleska b = new Beleska();
                 b.Naslov = bdt.Naslov;
-                b.IdStudent = bdt.IdStudent;
+                b.IdStudent = student;
                 b.Dokument = bdt.Dokument;
-                b.IdCas = bdt.IdCas;
+                b.IdCas = bdt.cas.IdCas;
 
                 b.RedniBroj = _context.Beleska
-                                .Where(b => b.IdStudent == bdt.IdStudent &&
-                                        b.IdCas == bdt.IdCas)
+                                .Where(bel => bel.IdStudent == b.IdStudent &&
+                                        bel.IdCas == b.IdCas)
                                 .Count() + 1;//Redni broj pocinje od 1.
 
                 _context.Beleska.Add(b);

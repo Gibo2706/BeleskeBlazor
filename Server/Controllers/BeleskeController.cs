@@ -1,6 +1,8 @@
 ﻿using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using BeleskeBlazor.Shared;
 
 
 namespace BeleskeBlazor.Server.Controllers
@@ -20,18 +22,20 @@ namespace BeleskeBlazor.Server.Controllers
         {
             var list = await _belRepo.GetBeleskeCasa(id);
 
-            List<BeleskaDTO> beleske = list.Select(
-                                        b => new BeleskaDTO(b.IdBeleska, b.RedniBroj, b.Naslov,
-                                        b.Dokument, b.IdStudent, b.IdCas)).ToList();
+            List<BeleskaDTO> beleske = list
+                                    .Select(b => ConverterDTO.getDTO(b))
+                                    .ToList();
             return Ok(beleske);
         }
 
 
         [Route("addBeleska")]
         [HttpPost]
-        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt)
+        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt, [FromBody] Boolean jeUlogovan)
         {
-            if (await _belRepo.insertBeleska(bdt))
+            //Llgika da li je anoniman
+
+            if (await _belRepo.insertBeleska(bdt, null))
                 return Ok();
             return BadRequest();
         }
@@ -45,9 +49,9 @@ namespace BeleskeBlazor.Server.Controllers
             var list = await _belRepo.GetBeleskeDinamicno(predmet, brCasa, imeAutora, prezimeAutora,
                                       datumOd, datumDo, naslov, idTagovi);
 
-            List<BeleskaDTO> beleske = list.Select(
-                                        b => new BeleskaDTO(b.IdBeleska, b.RedniBroj, b.Naslov,
-                                        b.Dokument, b.IdStudent, b.IdCas)).ToList();
+            List<BeleskaDTO> beleske = list
+                                    .Select(b => ConverterDTO.getDTO(b))
+                                    .ToList();
             return Ok(beleske);
         }
     }

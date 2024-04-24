@@ -21,8 +21,8 @@ namespace BeleskeBlazor.Server.Controllers
         {
             List<Cas> list = await _casRepo.GetCasoviPredmetaUSemestru(semId, predId);
 
-            List<CasDTO> casovi = list.Select(c =>
-                                  new CasDTO(c.IdCas, c.RedniBroj, c.Datum, c.VremePocetka, c.VremeKraja))
+            List<CasDTO> casovi = list
+                                .Select(c => ConverterDTO.getDTO(c))
                                 .ToList();
 
             return Ok(casovi);
