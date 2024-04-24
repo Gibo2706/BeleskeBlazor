@@ -31,7 +31,7 @@ namespace BeleskeBlazor.Server.Controllers
 
         [Route("addBeleska")]
         [HttpPost]
-        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt, [FromBody] Boolean jeUlogovan)
+        public async Task<ActionResult> addBeleska(BeleskaDTO bdt, Boolean jeUlogovan)
         {
             //Llgika da li je anoniman
 
