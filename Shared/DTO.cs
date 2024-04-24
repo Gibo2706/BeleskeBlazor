@@ -37,7 +37,8 @@ namespace BeleskeBlazor.Shared
             [property: JsonPropertyName("vremePocetka")] DateTime VremePocetka,
             [property: JsonPropertyName("vremeKraja")] DateTime VremeKraja,
             [property: JsonPropertyName("profesor")] ProfesorDTO profesor,
-            [property: JsonPropertyName("semestar")] SemestarDTO semestar
+            [property: JsonPropertyName("semestar")] SemestarDTO semestar,
+            [property: JsonPropertyName("predmet")] PredmetDTO predmet
         ) : ISerializable
         {
             public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -47,7 +48,7 @@ namespace BeleskeBlazor.Shared
 
             public override string ToString()
             {
-                return IdCas + "|" + RedniBroj + "|" + Datum + "|" + VremePocetka + "|" + VremeKraja + "|" + profesor.ToString() + "|" + semestar.ToString();
+                return IdCas + "|" + RedniBroj + "|" + Datum + "|" + VremePocetka + "|" + VremeKraja + "|" + profesor.ToString() + "|" + semestar.ToString() + "|" + predmet.ToString();
             }
         }
         /*public record class DrziUsemestruDTO(
@@ -196,7 +197,7 @@ namespace BeleskeBlazor.Shared
         {
             var splitValues = stringValue.Split('|'); // Assuming '|' separates properties in the string
 
-            if (splitValues.Length != 7)
+            if (splitValues.Length != 8)
             {
                 throw new FormatException("Invalid format for CasDTO string.");
             }
@@ -208,8 +209,9 @@ namespace BeleskeBlazor.Shared
             DateTime vremeKraja = DateTime.Parse(splitValues[4]);
             ProfesorDTO profesor = ProfesorDTOConverter.ParseProfesorDTOFromString(splitValues[5]);
             SemestarDTO semestar = SemestarDTOConverter.ParseSemestarDTOFromString(splitValues[6]);
+            PredmetDTO predmet = PredmetDTOConverter.ParsePredmetDTOFromString(splitValues[7]);
 
-            return new CasDTO(idCas, redniBroj, datum, vremePocetka, vremeKraja, profesor, semestar);
+            return new CasDTO(idCas, redniBroj, datum, vremePocetka, vremeKraja, profesor, semestar, predmet);
         }
     }
 

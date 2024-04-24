@@ -128,6 +128,8 @@ namespace BeleskeBlazor.Server.Data
                 .ThenInclude(d => d.IdProfesorNavigation)
                 .Include(c => c.IdDrziNavigation)
                 .ThenInclude(d => d.IdSemestarNavigation)
+                .Include(c => c.IdDrziNavigation)
+                .ThenInclude(d => d.IdPredmetNavigation)
                 .FirstOrDefault(c => c.IdCas == id);
         }
 
