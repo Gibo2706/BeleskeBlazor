@@ -23,7 +23,7 @@
                     <option selected>Choose...</option>
                     @foreach (var subject in Predmeti)
                     {
-                        <option value="@subject.IdPredmet">@subject.Naziv</option>
+                        <option value="@subject">@subject.Naziv</option>
                     }
                 </select>
                 }
@@ -35,7 +35,7 @@
                 <select class="form-select" id="subjectSelect" @bind:get="SelectedSemestarId" @bind:set="SemestarInput">
                         @foreach (var sem in Semestri)
                         {
-                            <option value="@sem.IdSemestar">@sem.Broj </option>
+                            <option value="@sem">@sem.Broj </option>
                         }
                     }
                 </select>
@@ -49,12 +49,12 @@
                     
                             @foreach (var subject in Casovi)
                             {
-                                <option value="@subject.IdCas">@subject.RedniBroj - @subject.Datum</option>
+                                <option value="@subject">@subject.RedniBroj - @subject.Datum</option>
                             }
                     </select>
                 }
             </div>
-            @if (SelectedLectureId != -1 && SelectedSubjectId != -1)
+            @if (SelectedLectureId != null && SelectedSubjectId != null)
             {
                 <div class="mb-3">
                     <label for="noteTitle" class="form-label">Note Title:</label>
@@ -105,9 +105,9 @@
     List<PredmetDTO>? Predmeti;
     ObservableCollection<CasDTO>? Casovi;
     ObservableCollection<SemestarDTO>? Semestri;
-    int SelectedSubjectId = -1;
-    int SelectedLectureId = -1;
-    int SelectedSemestarId = -1;
+    PredmetDTO? SelectedSubjectId = null;
+    CasDTO? SelectedLectureId = null;
+    SemestarDTO? SelectedSemestarId = null;
     bool IsSelected;
     string title;
     string content = "";
@@ -123,29 +123,29 @@
     }
 
 
-    private async Task SubjectInput(int id)
+    private async Task SubjectInput(PredmetDTO id)
     {
         SelectedSubjectId = id;
         Semestri!.Clear();
         IsSelected = true;
-        (await GetSemestarsAsync(SelectedSubjectId)).ForEach(x => Semestri.Add(x));
-        SelectedLectureId = -1;
-        SelectedSemestarId = -1;
+        (await GetSemestarsAsync(SelectedSubjectId.IdPredmet)).ForEach(x => Semestri.Add(x));
+        SelectedLectureId = null;
+        SelectedSemestarId = null;
     }
 
-    private async Task SemestarInput(int id)
+    private async Task SemestarInput(SemestarDTO id)
     {
         SelectedSemestarId = id; 
         Casovi!.Clear();
-        (await GetLecturesAsync(SelectedSubjectId, id)).ForEach(x => Casovi.Add(x));
-        SelectedLectureId = -1;
+        (await GetLecturesAsync(SelectedSubjectId.IdPredmet, id.IdSemestar)).ForEach(x => Casovi.Add(x));
+        SelectedLectureId = null;
     }
 
     private Task<List<SemestarDTO>> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
 
     private Task<List<CasDTO>> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
 
-    private void LectureInput(int id)
+    private void LectureInput(CasDTO id)
     {
         SelectedLectureId = id;
     }
@@ -153,7 +153,7 @@
     private async Task SacuvajBelesku()
     {
         byte[] beleska = Encoding.UTF8.GetBytes(content);
-        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLectureId);
+        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLectureId, null);
         if (saved)
         {
             Navigation.NavigateTo("/");
