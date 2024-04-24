@@ -53,7 +53,12 @@ namespace BeleskeBlazor.Server.Repositoriums
                                                             string? naslov, int[]? idTagovi)
         {
             var dinamicniUpit = _context.Beleska.AsQueryable();
-
+            dinamicniUpit.ToList().ForEach(d => d = _context.GetBeleskaWithRelatedEntities(d.IdBeleska));
+            dinamicniUpit.ToList().ForEach(d => d.IdCasNavigation = _context.GetCasWithRelatedEntities(d.IdCas));
+            dinamicniUpit.ToList().ForEach(d =>
+            {
+                if (d.IdStudent != null) d.IdStudentNavigation = _context.GetStudentWithRelatedEntities((int)d.IdStudent);
+            });
             if (predmet != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCas == predmet);
 
@@ -61,9 +66,7 @@ namespace BeleskeBlazor.Server.Repositoriums
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.RedniBroj == brCasa);
 
             if (imeAutora != null)
-                dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
-                                    b.IdStudentNavigation.Ime
-                                    .StartsWith(imeAutora, StringComparison.OrdinalIgnoreCase));
+                dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null && EF.Functions.Like(imeAutora, b.IdStudentNavigation.Ime));
 
             if (prezimeAutora != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
