@@ -21,7 +21,7 @@
                             <option selected>Choose...</option>
                             @foreach (var subject in Predmeti)
                             {
-                                <option value="@subject.IdPredmet">@subject.Naziv</option>
+                                <option value="@subject">@subject.Naziv</option>
                             }
                         </select>
                     }
@@ -146,9 +146,9 @@
     private ObservableCollection<CasDTO>? Casovi;
     private ObservableCollection<SemestarDTO>? Semestri;
     private ObservableCollection<BeleskaDTO>? Beleske;
-    int SelectedSubjectId = -1;
-    int SelectedLectureId = -1;
-    int SelectedSemestarId = -1;
+    PredmetDTO SelectedSubjectId = null;
+    CasDTO SelectedLectureId = null;
+    SemestarDTO SelectedSemestarId = null;
     string authorName = "";
     string authorSurname = "";
     string title = "";
@@ -164,28 +164,28 @@
 
     }
 
-    private async Task SubjectInput(int id)
+    private async Task SubjectInput(PredmetDTO id)
     {
         SelectedSubjectId = id;
         Semestri!.Clear();
-        (await GetSemestarsAsync(SelectedSubjectId))?.ForEach(x => Semestri.Add(x));
-        SelectedLectureId = -1;
-        SelectedSemestarId = -1;
+        (await GetSemestarsAsync(SelectedSubjectId.IdPredmet))?.ForEach(x => Semestri.Add(x));
+        SelectedLectureId = null;
+        SelectedSemestarId = null;
     }
 
-    private async Task SemestarInput(int id)
+    private async Task SemestarInput(SemestarDTO id)
     {
         SelectedSemestarId = id;
         Casovi!.Clear();
-        (await GetLecturesAsync(SelectedSubjectId, id))?.ForEach(x => Casovi.Add(x));
-        SelectedLectureId = -1;
+        (await GetLecturesAsync(SelectedSubjectId.IdPredmet, id.IdSemestar))?.ForEach(x => Casovi.Add(x));
+        SelectedLectureId = null;
     }
 
     private Task<List<SemestarDTO>?> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
 
     private Task<List<CasDTO>?> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
 
-    private void LectureInput(int id)
+    private void LectureInput(CasDTO id)
     {
         SelectedLectureId = id;
     }
@@ -200,8 +200,8 @@
     private async Task FilterNotes()
     {
         List<BeleskaDTO>? res = await DataService.FilterNotesBy(
-                                                        predmet: SelectedSubjectId,
-                                                        brCasa: SelectedLectureId,
+                                                        predmet: SelectedSubjectId.IdPredmet,
+                                                        brCasa: SelectedLectureId.IdCas,
                                                         imeAutora: authorName,
                                                         prezimeAutora: authorSurname,
                                                         naslov: title,

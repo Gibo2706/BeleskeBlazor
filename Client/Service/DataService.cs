@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Client.Service
 {
@@ -68,7 +69,9 @@ namespace BeleskeBlazor.Client.Service
 
         public async Task<bool> SaveBeleska(String naslov, StudentDTO? idStudent, byte[] dokument, int redniBroj, CasDTO? idCas, TagDTO[]? tagovi)
         {
-            BeleskaDTO novaBeleska = new BeleskaDTO
+            bool saved = false;
+            Dictionary<String, Object> data = new Dictionary<String, Object>();
+            data.Add("bdt", new BeleskaDTO
                 (
                     0,
                     redniBroj,
@@ -77,10 +80,9 @@ namespace BeleskeBlazor.Client.Service
                     idStudent,
                     idCas,
                     tagovi
-                );
-
-            bool saved = false;
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska", novaBeleska);
+                ));
+            data.Add("jeUlogovan", false);
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska", data);
             if (response.IsSuccessStatusCode)
             {
                 saved = true;
@@ -159,4 +161,8 @@ namespace BeleskeBlazor.Client.Service
             return data;
         }
     }
+    record class SaveDTO(
+        [property: JsonPropertyName("bdt")] BeleskaDTO bdt,
+        [property: JsonPropertyName("jeUlogovan")] Boolean jeUlogovan
+        );
 }

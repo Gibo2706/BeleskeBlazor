@@ -15,9 +15,10 @@ namespace BeleskeBlazor.Server.Repositoriums
         public async Task<List<Cas>> GetCasoviPredmetaUSemestru(int semId, int predId)
         {
             List<Cas> list = _context.Cas
-                            .Where(c=> c.IdDrziNavigation.IdPredmet==predId && 
-                                        c.IdDrziNavigation.IdSemestar==semId) 
+                            .Where(c => c.IdDrziNavigation.IdPredmet == predId &&
+                                        c.IdDrziNavigation.IdSemestar == semId)
                             .ToList<Cas>();
+            list.ForEach(c => c = _context.GetCasWithRelatedEntities(c.IdCas));
             return list;
         }
     }

@@ -1,8 +1,7 @@
 ﻿using BeleskeBlazor.Server.Repositoriums;
+using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using BeleskeBlazor.Shared;
 
 
 namespace BeleskeBlazor.Server.Controllers

@@ -1,9 +1,7 @@
-﻿using BeleskeBlazor.Server.Data;
-using BeleskeBlazor.Server.Repositoriums;
+﻿using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BeleskeBlazor.Server.Controllers
 {
@@ -12,8 +10,9 @@ namespace BeleskeBlazor.Server.Controllers
     public class CasController : Controller
     {
         private readonly CasRepo _casRepo;
-       
-        public CasController(CasRepo casRepo) {
+
+        public CasController(CasRepo casRepo)
+        {
             _casRepo = casRepo;
         }
         [Route("getCasoviPredmetaUSemestru")]
@@ -22,7 +21,11 @@ namespace BeleskeBlazor.Server.Controllers
             List<Cas> list = await _casRepo.GetCasoviPredmetaUSemestru(semId, predId);
 
             List<CasDTO> casovi = list
-                                .Select(c => ConverterDTO.getDTO(c))
+                                .Select(c =>
+                                {
+
+                                    return ConverterDTO.getDTO(c);
+                                })
                                 .ToList();
 
             return Ok(casovi);

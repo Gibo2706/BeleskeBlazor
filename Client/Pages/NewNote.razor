@@ -23,7 +23,7 @@
                     <option selected>Choose...</option>
                     @foreach (var subject in Predmeti)
                     {
-                        <option value="@subject">@subject.Naziv</option>
+                        <option value=@subject>@subject.Naziv</option>
                     }
                 </select>
                 }
@@ -35,7 +35,7 @@
                 <select class="form-select" id="subjectSelect" @bind:get="SelectedSemestarId" @bind:set="SemestarInput">
                         @foreach (var sem in Semestri)
                         {
-                            <option value="@sem">@sem.Broj </option>
+                            <option value=@sem>@sem.Broj </option>
                         }
                     }
                 </select>
