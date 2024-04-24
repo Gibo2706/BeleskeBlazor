@@ -1,8 +1,7 @@
 ﻿using BeleskeBlazor.Server.Repositoriums;
+using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using BeleskeBlazor.Shared;
 
 
 namespace BeleskeBlazor.Server.Controllers
@@ -31,7 +30,7 @@ namespace BeleskeBlazor.Server.Controllers
 
         [Route("addBeleska")]
         [HttpPost]
-        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt, [FromBody] Boolean jeUlogovan)
+        public async Task<ActionResult> addBeleska(BeleskaDTO bdt, Boolean jeUlogovan)
         {
             //Llgika da li je anoniman
 
