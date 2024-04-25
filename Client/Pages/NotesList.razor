@@ -28,14 +28,17 @@
 
                 </div>
                 <div class="mb-3">
+                    @if (Semestri != null && Semestri.Count > 0)
+                    {
                         <label for="semestarSelect" class="form-label">Semestar:</label>
-                    <select class="form-select" id="semestarSelect" @bind:get="SelectedSemestar" @bind:set="SemestarInput">
-                        <option value="" selected>Choose...</option>
-                        @foreach (var sem in Semestri)
-                        {
-                            <option value=@sem>@sem.Broj </option>
-                        }
-                    </select>
+                        <select class="form-select" id="semestarSelect" @bind:get="SelectedSemestar" @bind:set="SemestarInput">
+                            <option value="" selected>Choose...</option>
+                            @foreach (var sem in Semestri)
+                            {
+                                <option value=@sem>@sem.Broj </option>
+                            }
+                        </select>
+                    }
                 </div>
                 <div class="mb-3">
                     @if (Casovi != null && Casovi.Count > 0)
@@ -160,7 +163,7 @@
     private string content = "";
     private List<PredmetDTO>? Predmeti;
     private ObservableCollection<CasDTO>? Casovi;
-    private ObservableCollection<SemestarDTO>? Semestri;
+    private List<SemestarDTO>? Semestri;
     private ObservableCollection<BeleskaDTO>? Beleske;
     PredmetDTO? SelectedSubject = null;
     CasDTO? SelectedLecture = null;
@@ -175,7 +178,7 @@
     protected override async Task OnInitializedAsync()
     {
         Casovi = new ObservableCollection<CasDTO>();
-        Semestri = new ObservableCollection<SemestarDTO>();
+        Semestri = await DataService.GetAllSemestars();
         Predmeti = await DataService.GetAllSubjects();
         Beleske = new ObservableCollection<BeleskaDTO>();
         //List<BeleskaDTO>? notes = await DataService.GetAllNotesForLecture(1);
@@ -197,6 +200,7 @@
     {
         if (id == null) return;
         SelectedSemestar = id;
+        if(SelectedSubject == null) return;
         Casovi!.Clear();
         (await GetLecturesAsync(SelectedSubject!.IdPredmet, id.IdSemestar))?.ForEach(x => Casovi.Add(x));
         SelectedLecture = null;

@@ -35,6 +35,25 @@ namespace BeleskeBlazor.Client.Service
             return data;
         }
 
+        public async Task<List<SemestarDTO>?> GetAllSemestars()
+        {
+            List<SemestarDTO>? data = new List<SemestarDTO>();
+
+            // Make an HTTP GET request to fetch data from the server
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7241/api/semestri/getAllSemestri");
+
+            if (response.IsSuccessStatusCode)
+            {
+
+                await using Stream responseStream = await response.Content.ReadAsStreamAsync();
+                data = await JsonSerializer.DeserializeAsync<List<SemestarDTO>?>(responseStream);
+
+                responseStream.Close();
+            }
+
+            return data;
+        }
+
         public async Task<List<SemestarDTO>?> GetAllSemestarsForSubject(int id)
         {
             List<SemestarDTO?> data = new List<SemestarDTO?>();
