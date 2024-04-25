@@ -92,6 +92,7 @@
                     </RadzenHtmlEditor>
                 </div>
                 <div class="mb-3">
+                    <label for="tagSelect">Tags:</label>
                     <select class="form-select" multiple @bind:get="tagovi" @bind:set="TagoviInput">
                         <option value=1>Predavanje</option>
                         <option value=2>Vezbe</option>
@@ -167,7 +168,12 @@
     private async Task SacuvajBelesku()
     {
         byte[] beleska = Encoding.UTF8.GetBytes(content);
-        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLecture, null);
+        TagDTO[] tagoviDTO = new TagDTO[tagovi.Length];
+        for (int i = 0; i<tagovi.Length; i++)
+        {
+            tagoviDTO[i] = new TagDTO(tagovi[i], null);   
+        }
+        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLecture, tagoviDTO);
         if (saved)
         {
             Navigation.NavigateTo("/");
