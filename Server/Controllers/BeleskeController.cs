@@ -29,14 +29,14 @@ namespace BeleskeBlazor.Server.Controllers
 
 
         [Route("addBeleska")]
-        [HttpPost]
-        public async Task<ActionResult> addBeleska(BeleskaDTO bdt, Boolean jeUlogovan)
+        [HttpPost("{jeUlogovan}")]
+        public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt, [FromQuery] Boolean jeUlogovan)
         {
             //Llgika da li je anoniman
-
             if (await _belRepo.insertBeleska(bdt, null))
                 return Ok();
-            return BadRequest();
+            else
+                return BadRequest();
         }
 
         [Route("getBeleskeDinamicno")]
@@ -47,7 +47,7 @@ namespace BeleskeBlazor.Server.Controllers
         {
             int? idS = HttpContext.Session.GetInt32("UserId");
 
-            if(moje!= null && moje.Value && idS == null)
+            if (moje != null && moje.Value && idS == null)
             {
                 return BadRequest("You need to log in to see your notes.");
             }

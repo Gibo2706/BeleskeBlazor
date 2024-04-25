@@ -70,19 +70,17 @@ namespace BeleskeBlazor.Client.Service
         public async Task<bool> SaveBeleska(String naslov, StudentDTO? idStudent, byte[] dokument, int redniBroj, CasDTO? idCas, TagDTO[]? tagovi)
         {
             bool saved = false;
-            Dictionary<String, Object> data = new Dictionary<String, Object>();
-            data.Add("bdt", new BeleskaDTO
-                (
-                    0,
-                    redniBroj,
-                    naslov,
-                    dokument,
-                    idStudent,
-                    idCas,
-                    tagovi
-                ));
-            data.Add("jeUlogovan", false);
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska", data);
+            BeleskaDTO data = new BeleskaDTO(
+                   0,
+                   redniBroj,
+                   naslov,
+                   dokument,
+                   idStudent,
+                   idCas,
+                   tagovi
+               );
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska?jeUlogovan=false", data);
+
             if (response.IsSuccessStatusCode)
             {
                 saved = true;

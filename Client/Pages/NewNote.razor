@@ -18,43 +18,42 @@
         <form @onsubmit="SacuvajBelesku">
             <div class="mb-3">
                 @if(Predmeti != null && Predmeti.Count > 0){
-                <label for="subjectSelect" class="form-label">Subject:</label>
-                <select class="form-select" id="subjectSelect" @bind:get="SelectedSubjectId" @bind:set="SubjectInput" >
-                    <option selected>Choose...</option>
-                    @foreach (var subject in Predmeti)
-                    {
-                        <option value=@subject>@subject.Naziv</option>
-                    }
-                </select>
+                    <label for="subjectSelect" class="form-label">Subject:</label>
+                    <select class="form-select" id="subjectSelect" @bind:get="SelectedSubject" @bind:set="SubjectInput" >
+                        <option selected>Choose...</option>
+                        @foreach (var subject in Predmeti)
+                        {
+                            <option value=@subject>@subject.Naziv</option>
+                        }
+                    </select>
                 }
 
             </div>
             <div class="mb-3">
                 @if (Semestri != null && Semestri.Count > 0){
-                <label for="lectureSelect" class="form-label">Semestar:</label>
-                <select class="form-select" id="subjectSelect" @bind:get="SelectedSemestarId" @bind:set="SemestarInput">
+                    <label for="semestarSelect" class="form-label">Semestar:</label>
+                    <select class="form-select" id="semestarSelect" @bind:get="SelectedSemestar" @bind:set="SemestarInput">
                         @foreach (var sem in Semestri)
                         {
                             <option value=@sem>@sem.Broj </option>
                         }
-                    }
-                </select>
+                    </select>
                 }
             </div>
             <div class="mb-3">
                 @if (Casovi != null && Casovi.Count > 0){
                     <label for="lectureSelect" class="form-label">Lecture:</label>
-                    <select class="form-select" id="subjectSelect" @bind:get="SelectedLectureId" @bind:set="LectureInput">
+                    <select class="form-select" id="lectureSelect" @bind:get="SelectedLecture" @bind:set="LectureInput">
                         <option selected>Choose...</option>
-                    
-                            @foreach (var subject in Casovi)
-                            {
-                                <option value="@subject">@subject.RedniBroj - @subject.Datum</option>
-                            }
+                        @foreach (CasDTO lecture in Casovi)
+                        {
+                            Console.WriteLine(lecture.ToString().Split("|").Length + "");
+                            <option value=@lecture>@lecture.RedniBroj - @lecture.Datum (@lecture.profesor.Ime @lecture.profesor.Prezime)</option>
+                        }
                     </select>
                 }
             </div>
-            @if (SelectedLectureId != null && SelectedSubjectId != null)
+            @if (SelectedLecture != null && SelectedSubject != null)
             {
                 <div class="mb-3">
                     <label for="noteTitle" class="form-label">Note Title:</label>
@@ -105,11 +104,11 @@
     List<PredmetDTO>? Predmeti;
     ObservableCollection<CasDTO>? Casovi;
     ObservableCollection<SemestarDTO>? Semestri;
-    PredmetDTO? SelectedSubjectId = null;
-    CasDTO? SelectedLectureId = null;
-    SemestarDTO? SelectedSemestarId = null;
+    PredmetDTO? SelectedSubject = null;
+    CasDTO? SelectedLecture = null;
+    SemestarDTO? SelectedSemestar = null;
     bool IsSelected;
-    string title;
+    string? title;
     string content = "";
 
     protected override async Task OnInitializedAsync()
@@ -123,37 +122,38 @@
     }
 
 
-    private async Task SubjectInput(PredmetDTO id)
+    private async Task SubjectInput(PredmetDTO? id)
     {
-        SelectedSubjectId = id;
+        SelectedSubject = id;
         Semestri!.Clear();
         IsSelected = true;
-        (await GetSemestarsAsync(SelectedSubjectId.IdPredmet)).ForEach(x => Semestri.Add(x));
-        SelectedLectureId = null;
-        SelectedSemestarId = null;
+        (await GetSemestarsAsync(SelectedSubject!.IdPredmet))?.ForEach(x => Semestri.Add(x));
+        SelectedLecture = null;
+        SelectedSemestar = null;
     }
 
-    private async Task SemestarInput(SemestarDTO id)
+    private async Task SemestarInput(SemestarDTO? id)
     {
-        SelectedSemestarId = id; 
+        SelectedSemestar = id; 
         Casovi!.Clear();
-        (await GetLecturesAsync(SelectedSubjectId.IdPredmet, id.IdSemestar)).ForEach(x => Casovi.Add(x));
-        SelectedLectureId = null;
+        (await GetLecturesAsync(SelectedSubject!.IdPredmet, id!.IdSemestar))?.ForEach(x => Casovi.Add(x));
+        SelectedLecture = null;
     }
 
-    private Task<List<SemestarDTO>> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
+    private Task<List<SemestarDTO>?> GetSemestarsAsync(int subjectId) => DataService.GetAllSemestarsForSubject(subjectId);
 
-    private Task<List<CasDTO>> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
+    private Task<List<CasDTO>?> GetLecturesAsync(int subjectId, int lectureId) => DataService.GetAllLecturesForSubjectSemestar(subjectId, lectureId);
 
-    private void LectureInput(CasDTO id)
+    private void LectureInput(CasDTO? id)
     {
-        SelectedLectureId = id;
+        Console.WriteLine("Lecture input called: " + id);
+        SelectedLecture = id;
     }
 
     private async Task SacuvajBelesku()
     {
         byte[] beleska = Encoding.UTF8.GetBytes(content);
-        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLectureId, null);
+        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLecture, null);
         if (saved)
         {
             Navigation.NavigateTo("/");

@@ -39,12 +39,8 @@ namespace BeleskeBlazor.Shared
             [property: JsonPropertyName("profesor")] ProfesorDTO profesor,
             [property: JsonPropertyName("semestar")] SemestarDTO semestar,
             [property: JsonPropertyName("predmet")] PredmetDTO predmet
-        ) : ISerializable
+        )
         {
-            public void GetObjectData(SerializationInfo info, StreamingContext context)
-            {
-                throw new NotImplementedException();
-            }
 
             public override string ToString()
             {
@@ -197,20 +193,21 @@ namespace BeleskeBlazor.Shared
         {
             var splitValues = stringValue.Split('|'); // Assuming '|' separates properties in the string
 
-            if (splitValues.Length != 8)
-            {
-                throw new FormatException("Invalid format for CasDTO string.");
-            }
+            /*            if (splitValues.Length != 8)
+                        {
+                            throw new FormatException("Invalid format for CasDTO string.");
+                        }*/
 
             int idCas = int.Parse(splitValues[0]);
             int redniBroj = int.Parse(splitValues[1]);
             DateOnly datum = DateOnly.Parse(splitValues[2]);
             DateTime vremePocetka = DateTime.Parse(splitValues[3]);
             DateTime vremeKraja = DateTime.Parse(splitValues[4]);
-            ProfesorDTO profesor = ProfesorDTOConverter.ParseProfesorDTOFromString(splitValues[5]);
-            SemestarDTO semestar = SemestarDTOConverter.ParseSemestarDTOFromString(splitValues[6]);
-            PredmetDTO predmet = PredmetDTOConverter.ParsePredmetDTOFromString(splitValues[7]);
-
+            ProfesorDTO profesor = ProfesorDTOConverter.ParseProfesorDTOFromString(splitValues[5] + "|" + splitValues[6] + "|" + splitValues[7]);
+            SemestarDTO semestar = SemestarDTOConverter.ParseSemestarDTOFromString(splitValues[8] + "|" + splitValues[9] + "|" + splitValues[10]);
+            PredmetDTO predmet = PredmetDTOConverter.ParsePredmetDTOFromString(splitValues[11] + "|" + splitValues[12]);
+            // 1|1|4/10/2024|4/7/2024 10:08:51 PM|4/7/2024 10:08:53 PM|1|Nikola|Kuzmic|1|2023/2024|1|1|Operativni Sistemi 2
+            Console.WriteLine(new CasDTO(idCas, redniBroj, datum, vremePocetka, vremeKraja, profesor, semestar, predmet));
             return new CasDTO(idCas, redniBroj, datum, vremePocetka, vremeKraja, profesor, semestar, predmet);
         }
     }
