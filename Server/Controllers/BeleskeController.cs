@@ -32,8 +32,12 @@ namespace BeleskeBlazor.Server.Controllers
         [HttpPost("{jeUlogovan}")]
         public async Task<ActionResult> addBeleska([FromBody] BeleskaDTO bdt, [FromQuery] Boolean jeUlogovan)
         {
-            //Llgika da li je anoniman
-            if (await _belRepo.insertBeleska(bdt, null))
+            int? idS = HttpContext.Session.GetInt32("UserId");
+
+            if (jeUlogovan && idS == null)
+                return BadRequest("Session expired, log in again");
+
+            if (await _belRepo.insertBeleska(bdt, idS))
                 return Ok();
             else
                 return BadRequest();
