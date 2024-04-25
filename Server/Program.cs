@@ -12,6 +12,7 @@ builder.Services.AddScoped<BeleskaRepo>();
 builder.Services.AddScoped<CasRepo>();
 builder.Services.AddScoped<PredmetRepo>();
 builder.Services.AddScoped<SemestarRepo>();
+builder.Services.AddScoped<StudentRepo>();
 builder.Services.AddDistributedMemoryCache();
 
 builder.Services.AddSession(options =>

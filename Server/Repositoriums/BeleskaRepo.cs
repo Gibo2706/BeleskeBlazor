@@ -2,6 +2,7 @@
 using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Dynamic.Core;
 
 namespace BeleskeBlazor.Server.Repositoriums
@@ -32,6 +33,21 @@ namespace BeleskeBlazor.Server.Repositoriums
 
                 _context.Beleska.Add(b);
                 _context.SaveChanges();
+
+                if (bdt.tagovi != null && bdt.tagovi.Length!=0)
+                {
+                    b.TagBeleskas = bdt.tagovi.Select(t =>
+                    {
+                        TagBeleska tb = new TagBeleska();
+                        tb.IdBeleska = b.IdBeleska;
+                        tb.IdTag = t.IdTag;
+                        _context.TagBeleska.Add(tb);
+                        return tb;
+                    }).ToList();
+                }
+
+                _context.SaveChanges();
+
                 return true;
             }
             catch (Exception ex)
@@ -70,11 +86,13 @@ namespace BeleskeBlazor.Server.Repositoriums
 
             if (imeAutora != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null && 
-                                            EF.Functions.Like(imeAutora, b.IdStudentNavigation.Ime));
+                                            EF.Functions.Like(
+                                                b.IdStudentNavigation.Ime, "%" + imeAutora + "%"));
 
             if (prezimeAutora != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
-                                    EF.Functions.Like(prezimeAutora, b.IdStudentNavigation.Prezime));
+                                    EF.Functions.Like(
+                                        b.IdStudentNavigation.Prezime, "%" + prezimeAutora + "%"));
 
             if (datumOd != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.Datum >= datumOd);
@@ -84,7 +102,7 @@ namespace BeleskeBlazor.Server.Repositoriums
 
             if (naslov != null)
                 dinamicniUpit = dinamicniUpit.Where(b =>
-                                    b.Naslov.StartsWith(naslov, StringComparison.OrdinalIgnoreCase));
+                                    EF.Functions.Like(b.Naslov, "%"+naslov+"%"));
 
             if (idTagovi != null && idTagovi.Length != 0)
                 dinamicniUpit = dinamicniUpit.Where(b => b.TagBeleskas
