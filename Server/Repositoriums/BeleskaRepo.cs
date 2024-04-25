@@ -2,6 +2,7 @@
 using BeleskeBlazor.Shared;
 using BeleskeBlazor.Shared.DTO;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace BeleskeBlazor.Server.Repositoriums
 {
@@ -47,31 +48,33 @@ namespace BeleskeBlazor.Server.Repositoriums
             return list;
         }
 
-        public async Task<List<Beleska>> GetBeleskeDinamicno(int? predmet, int? brCasa,
+        public async Task<List<Beleska>> GetBeleskeDinamicno(int? predmet, int? brCasa, int? semestar,
                                                             string? imeAutora, string? prezimeAutora,
-                                                            DateOnly? datumOd, DateOnly? datumDo,
-                                                            string? naslov, int[]? idTagovi)
+                                                            DateOnly? datumOd, DateOnly? datumDo, int? idS,
+                                                            string? naslov, int[]? idTagovi, Boolean? moje)
         {
             var dinamicniUpit = _context.Beleska.AsQueryable();
-            dinamicniUpit.ToList().ForEach(d => d = _context.GetBeleskaWithRelatedEntities(d.IdBeleska));
-            dinamicniUpit.ToList().ForEach(d => d.IdCasNavigation = _context.GetCasWithRelatedEntities(d.IdCas));
-            dinamicniUpit.ToList().ForEach(d =>
-            {
-                if (d.IdStudent != null) d.IdStudentNavigation = _context.GetStudentWithRelatedEntities((int)d.IdStudent);
-            });
+
+            if (moje != null && moje.Value)//U kontroleru se proveri da li je ulogovan ako hoce da lista svoje
+                dinamicniUpit = dinamicniUpit.Where(b => b.IdStudent == idS);
+
             if (predmet != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCas == predmet);
 
             if (brCasa != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.RedniBroj == brCasa);
 
+            if (semestar != null)
+                dinamicniUpit = dinamicniUpit.Where(b =>
+                                                b.IdCasNavigation.IdDrziNavigation.IdSemestar == semestar);
+
             if (imeAutora != null)
-                dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null && EF.Functions.Like(imeAutora, b.IdStudentNavigation.Ime));
+                dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null && 
+                                            EF.Functions.Like(imeAutora, b.IdStudentNavigation.Ime));
 
             if (prezimeAutora != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudentNavigation != null &&
-                                    b.IdStudentNavigation.Prezime
-                                    .StartsWith(prezimeAutora, StringComparison.OrdinalIgnoreCase));
+                                    EF.Functions.Like(prezimeAutora, b.IdStudentNavigation.Prezime));
 
             if (datumOd != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.Datum >= datumOd);

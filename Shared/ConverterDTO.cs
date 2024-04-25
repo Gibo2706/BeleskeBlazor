@@ -20,7 +20,7 @@ namespace BeleskeBlazor.Shared
             return new PredmetDTO(predmet.IdPredmet, predmet.Naziv);
         }
 
-        public static StudentDTO getDTO(Student? student)
+        public static StudentDTO? getDTO(Student? student)
         {
             if (student == null)
                 return null;

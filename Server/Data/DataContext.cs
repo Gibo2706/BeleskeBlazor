@@ -91,14 +91,13 @@ namespace BeleskeBlazor.Server.Data
             {
                 entity.HasKey(e => e.IdPredmet).HasName("PK__Predmet__2C2B78975DFCD7EE");
             });
-            modelBuilder.Entity<Predmet>().Navigation(p => p.DrziUsemestrus).AutoInclude();
-
+            //modelBuilder.Entity<Predmet>().Navigation(p => p.DrziUsemestrus).AutoInclude();
 
             modelBuilder.Entity<Profesor>(entity =>
             {
                 entity.HasKey(e => e.IdProfesor).HasName("PK__Profesor__E4BBA604E614A306");
             });
-            modelBuilder.Entity<Profesor>().Navigation(p => p.DrziUsemestrus).AutoInclude();
+            //modelBuilder.Entity<Profesor>().Navigation(p => p.DrziUsemestrus).AutoInclude();
 
             modelBuilder.Entity<Semestar>(entity =>
             {
@@ -106,19 +105,19 @@ namespace BeleskeBlazor.Server.Data
 
                 entity.Property(e => e.SkolskaGodina).HasDefaultValueSql("('2023/2024')");
             });
-            modelBuilder.Entity<Semestar>().Navigation(s => s.DrziUsemestrus).AutoInclude();
+            //modelBuilder.Entity<Semestar>().Navigation(s => s.DrziUsemestrus).AutoInclude();
 
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.HasKey(e => e.IdStudent).HasName("PK__Student__35B1F88A3B5EF8CC");
             });
-            modelBuilder.Entity<Student>().Navigation(s => s.Beleskas).AutoInclude();
+            //modelBuilder.Entity<Student>().Navigation(s => s.Beleskas).AutoInclude();
 
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.HasKey(e => e.IdTag).HasName("PK__Tag__020FEDB8FFEE4643");
             });
-            modelBuilder.Entity<Tag>().Navigation(t => t.TagBeleskas).AutoInclude();
+            //modelBuilder.Entity<Tag>().Navigation(t => t.TagBeleskas).AutoInclude();
 
             modelBuilder.Entity<TagBeleska>(entity =>
             {
@@ -133,7 +132,7 @@ namespace BeleskeBlazor.Server.Data
                     .HasConstraintName("TagBeleska_Tag");
             });
             modelBuilder.Entity<TagBeleska>().Navigation(t => t.IdTagNavigation).AutoInclude();
-            modelBuilder.Entity<TagBeleska>().Navigation(t => t.IdBeleskaNavigation).AutoInclude();
+            //modelBuilder.Entity<TagBeleska>().Navigation(t => t.IdBeleskaNavigation).AutoInclude();
         }
 
         public Cas? GetCasWithRelatedEntities(int id)
