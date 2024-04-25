@@ -47,7 +47,6 @@
                         <option selected>Choose...</option>
                         @foreach (CasDTO lecture in Casovi)
                         {
-                            Console.WriteLine(lecture.ToString().Split("|").Length + "");
                             <option value=@lecture>@lecture.RedniBroj - @lecture.Datum (@lecture.profesor.Ime @lecture.profesor.Prezime)</option>
                         }
                     </select>
@@ -92,8 +91,18 @@
                         <RadzenHtmlEditorFormatBlock />
                     </RadzenHtmlEditor>
                 </div>
+                <div class="mb-3">
+                    <select class="form-select" multiple @bind:get="tagovi" @bind:set="TagoviInput">
+                        <option value=1>Predavanje</option>
+                        <option value=2>Vezbe</option>
+                        <option value=3>Konsultacije</option>
+                        <option value=4>Priprema za kolokvijum</option>
+                        <option value=5>Skripta</option>
+                    </select>
+                </div>
                 <input type="hidden" id="studentId"  />
                 <button type="submit" class="btn btn-primary">Create Note</button>
+                
             }
         </form>
     </div>
@@ -110,6 +119,7 @@
     bool IsSelected;
     string? title;
     string content = "";
+    int[] tagovi = new int[5];
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,8 +156,12 @@
 
     private void LectureInput(CasDTO? id)
     {
-        Console.WriteLine("Lecture input called: " + id);
         SelectedLecture = id;
+    }
+
+    private void TagoviInput(int[] id)
+    {
+        tagovi = id;
     }
 
     private async Task SacuvajBelesku()
