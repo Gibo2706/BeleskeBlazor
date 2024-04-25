@@ -54,6 +54,9 @@ namespace BeleskeBlazor.Server.Data
                 entity.HasOne(d => d.IdStudentNavigation).WithMany(p => p.Beleskas).HasConstraintName("Beleska_Student");
             });
 
+            modelBuilder.Entity<Beleska>().Navigation(b => b.IdCasNavigation).AutoInclude();
+            modelBuilder.Entity<Beleska>().Navigation(b => b.IdStudentNavigation).AutoInclude();
+
             modelBuilder.Entity<Cas>(entity =>
             {
                 entity.HasKey(e => e.IdCas).HasName("PK__Cas__398E4042983BE281");
@@ -62,6 +65,7 @@ namespace BeleskeBlazor.Server.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Cas_Drzi");
             });
+            modelBuilder.Entity<Cas>().Navigation(c => c.IdDrziNavigation).AutoInclude();
 
             modelBuilder.Entity<DrziUsemestru>(entity =>
             {
@@ -79,16 +83,22 @@ namespace BeleskeBlazor.Server.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("DrziUSemestru_Semestar");
             });
+            modelBuilder.Entity<DrziUsemestru>().Navigation(d => d.IdPredmetNavigation).AutoInclude();
+            modelBuilder.Entity<DrziUsemestru>().Navigation(d => d.IdProfesorNavigation).AutoInclude();
+            modelBuilder.Entity<DrziUsemestru>().Navigation(d => d.IdSemestarNavigation).AutoInclude();
 
             modelBuilder.Entity<Predmet>(entity =>
             {
                 entity.HasKey(e => e.IdPredmet).HasName("PK__Predmet__2C2B78975DFCD7EE");
             });
+            modelBuilder.Entity<Predmet>().Navigation(p => p.DrziUsemestrus).AutoInclude();
+
 
             modelBuilder.Entity<Profesor>(entity =>
             {
                 entity.HasKey(e => e.IdProfesor).HasName("PK__Profesor__E4BBA604E614A306");
             });
+            modelBuilder.Entity<Profesor>().Navigation(p => p.DrziUsemestrus).AutoInclude();
 
             modelBuilder.Entity<Semestar>(entity =>
             {
@@ -96,16 +106,19 @@ namespace BeleskeBlazor.Server.Data
 
                 entity.Property(e => e.SkolskaGodina).HasDefaultValueSql("('2023/2024')");
             });
+            modelBuilder.Entity<Semestar>().Navigation(s => s.DrziUsemestrus).AutoInclude();
 
             modelBuilder.Entity<Student>(entity =>
             {
                 entity.HasKey(e => e.IdStudent).HasName("PK__Student__35B1F88A3B5EF8CC");
             });
+            modelBuilder.Entity<Student>().Navigation(s => s.Beleskas).AutoInclude();
 
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.HasKey(e => e.IdTag).HasName("PK__Tag__020FEDB8FFEE4643");
             });
+            modelBuilder.Entity<Tag>().Navigation(t => t.TagBeleskas).AutoInclude();
 
             modelBuilder.Entity<TagBeleska>(entity =>
             {
@@ -119,6 +132,8 @@ namespace BeleskeBlazor.Server.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("TagBeleska_Tag");
             });
+            modelBuilder.Entity<TagBeleska>().Navigation(t => t.IdTagNavigation).AutoInclude();
+            modelBuilder.Entity<TagBeleska>().Navigation(t => t.IdBeleskaNavigation).AutoInclude();
         }
 
         public Cas? GetCasWithRelatedEntities(int id)
