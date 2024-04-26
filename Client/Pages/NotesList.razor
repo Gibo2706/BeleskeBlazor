@@ -232,8 +232,9 @@
     private async Task FilterNotes()
     {
         List<BeleskaDTO>? res = await DataService.FilterNotesBy(
-                                                        predmet: SelectedSubject.IdPredmet,
-                                                        brCasa: SelectedLecture.IdCas,
+                                                        predmet: SelectedSubject,
+                                                        brCasa: SelectedLecture,
+                                                        semestar: SelectedSemestar,
                                                         imeAutora: authorName,
                                                         prezimeAutora: authorSurname,
                                                         naslov: title,

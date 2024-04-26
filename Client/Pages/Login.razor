@@ -1,4 +1,6 @@
 ﻿@page "/login"
+@using BeleskeBlazor.Client.Service
+@inject LoginService loginService
 
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -12,11 +14,11 @@
         <div class="card-body">
             <div class="form-group">
                 <label for="username">Username</label>
-                <input id="username" class="form-control" @bind="username" />
+                <input placeholder="Username..." id="username" class="form-control" @bind="username" />
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input id="password" class="form-control" @bind="password" />
+                <input placeholder="Password..." type="password" class="form-control" @bind="password" />
             </div>
         </div>
         <div class="card-footer text-center">
@@ -26,13 +28,15 @@
 </div>
 
 @code {
-    private string username;
-    private string password;
+    private string? username;
+    private string? password;
+    private string? poruka;
 
-    private void LoginS()
+    private async Task LoginS()
     {
-        // Logic to handle login
-        Console.WriteLine($"Username: {username}, Password: {password}");
-        // Redirect or perform other actions after successful login
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            return;
+        poruka = await loginService.LogIn(username, password);
+        Console.WriteLine(poruka);
     }
 }

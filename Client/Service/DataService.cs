@@ -124,7 +124,7 @@ namespace BeleskeBlazor.Client.Service
             return data;
         }
 
-        public async Task<List<BeleskaDTO>?> FilterNotesBy(int? predmet, int? brCasa,
+        public async Task<List<BeleskaDTO>?> FilterNotesBy(PredmetDTO? predmet, CasDTO? brCasa, SemestarDTO? semestar,
                                                             string? imeAutora, string? prezimeAutora,
                                                             DateOnly? datumOd, DateOnly? datumDo,
                                                             string? naslov, int[]? idTagovi)
@@ -133,11 +133,15 @@ namespace BeleskeBlazor.Client.Service
             String url = "https://localhost:7241/api/beleske/getBeleskeDinamicno?";
             if (predmet != null)
             {
-                url += "predmet=" + UrlEncoder.Default.Encode("" + predmet) + "&";
+                url += "predmet=" + UrlEncoder.Default.Encode("" + predmet.IdPredmet) + "&";
             }
             if (brCasa != null)
             {
-                url += "brCasa=" + UrlEncoder.Default.Encode("" + brCasa) + "&";
+                url += "brCasa=" + UrlEncoder.Default.Encode("" + brCasa.RedniBroj) + "&";
+            }
+            if (semestar != null)
+            {
+                url += "brCasa=" + UrlEncoder.Default.Encode("" + semestar.IdSemestar) + "&";
             }
             if (imeAutora != null)
             {
