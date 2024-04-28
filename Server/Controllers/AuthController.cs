@@ -18,6 +18,18 @@ namespace BeleskeBlazor.Server.Controllers
             _studRepo = studRepo;
         }
 
+        [Route("continueSess")]
+        [HttpGet]
+        public async Task<ActionResult<String>> continueSess()
+        {
+            int? idS = HttpContext.Session.GetInt32("UserId");
+
+            if (!idS.HasValue)
+                return BadRequest("Session expired");
+
+            return Ok("Session renewed for 5 more minutes");
+        }
+
         [Route("logIn")]
         [HttpGet]
         public async Task<ActionResult<String>> logIn(String username, String password)
