@@ -56,7 +56,7 @@ namespace BeleskeBlazor.Server.Data
 
             modelBuilder.Entity<Beleska>().Navigation(b => b.IdCasNavigation).AutoInclude();
             modelBuilder.Entity<Beleska>().Navigation(b => b.IdStudentNavigation).AutoInclude();
-
+            modelBuilder.Entity<Beleska>().Navigation(b => b.TagBeleskas).AutoInclude();
             modelBuilder.Entity<Cas>(entity =>
             {
                 entity.HasKey(e => e.IdCas).HasName("PK__Cas__398E4042983BE281");

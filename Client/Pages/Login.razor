@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using BeleskeBlazor.Client.Service
 @inject LoginService loginService
+@inject NavigationManager Navigation
 
 @using Microsoft.AspNetCore.Components.Forms
 
@@ -38,5 +39,6 @@
             return;
         poruka = await loginService.LogIn(username, password);
         Console.WriteLine(poruka);
+        Navigation.NavigateTo("/");
     }
 }

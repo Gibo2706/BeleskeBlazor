@@ -8,7 +8,7 @@
 @using System.Text
 @inject NavigationManager Navigation
 @inject DataService DataService
-
+@inject LoginService loginService
 
 
 <div class="container mt-5 text-center">
@@ -173,7 +173,16 @@
         {
             tagoviDTO[i] = new TagDTO(tagovi[i], null);   
         }
-        bool saved = await DataService.SaveBeleska(title, null, beleska, 0, SelectedLecture, tagoviDTO);
+        bool saved = false;
+        if (LoginService.IsLoggedIn)
+        {
+            saved = await DataService.SaveBeleska(title, LoginService.IsLoggedIn, beleska, 0, SelectedLecture, tagoviDTO);
+            await loginService.RenewSession();
+        }
+        else
+        {
+            saved = await DataService.SaveBeleska(title, LoginService.IsLoggedIn, beleska, 0, SelectedLecture, tagoviDTO);
+        }
         if (saved)
         {
             Navigation.NavigateTo("/");

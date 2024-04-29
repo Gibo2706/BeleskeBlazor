@@ -2,7 +2,6 @@
 using System.Net.Http.Json;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace BeleskeBlazor.Client.Service
 {
@@ -86,7 +85,7 @@ namespace BeleskeBlazor.Client.Service
             return data;
         }
 
-        public async Task<bool> SaveBeleska(String naslov, StudentDTO? idStudent, byte[] dokument, int redniBroj, CasDTO? idCas, TagDTO[]? tagovi)
+        public async Task<bool> SaveBeleska(String naslov, bool? isLoged, byte[] dokument, int redniBroj, CasDTO? idCas, TagDTO[]? tagovi)
         {
             bool saved = false;
             BeleskaDTO data = new BeleskaDTO(
@@ -94,7 +93,7 @@ namespace BeleskeBlazor.Client.Service
                    redniBroj,
                    naslov,
                    dokument,
-                   idStudent,
+                   new StudentDTO("", "", ""),
                    idCas,
                    tagovi
                );
@@ -127,7 +126,7 @@ namespace BeleskeBlazor.Client.Service
         public async Task<List<BeleskaDTO>?> FilterNotesBy(PredmetDTO? predmet, CasDTO? brCasa, SemestarDTO? semestar,
                                                             string? imeAutora, string? prezimeAutora,
                                                             DateOnly? datumOd, DateOnly? datumDo,
-                                                            string? naslov, int[]? idTagovi)
+                                                            string? naslov, int[]? idTagovi, bool? moje)
         {
             List<BeleskaDTO?> data = new List<BeleskaDTO?>();
             String url = "https://localhost:7241/api/beleske/getBeleskeDinamicno?";
@@ -163,12 +162,15 @@ namespace BeleskeBlazor.Client.Service
             {
                 url += "naslov=" + UrlEncoder.Default.Encode("" + naslov) + "&";
             }
-            if (idTagovi != null)
+            if (moje != null)
             {
-                url += "idTagovi=" + UrlEncoder.Default.Encode("" + idTagovi) + "&";
+                url += "moje=" + UrlEncoder.Default.Encode("" + moje) + "&";
             }
+
             Console.WriteLine("URL: " + url);
-            HttpResponseMessage response = await _httpClient.GetAsync(url);
+            HttpRequestMessage _httpClientc = new HttpRequestMessage(HttpMethod.Post, url);
+            _httpClientc.Content = JsonContent.Create(idTagovi);
+            HttpResponseMessage response = await _httpClient.SendAsync(_httpClientc);
 
             if (response.IsSuccessStatusCode)
             {
@@ -182,8 +184,4 @@ namespace BeleskeBlazor.Client.Service
             return data;
         }
     }
-    record class SaveDTO(
-        [property: JsonPropertyName("bdt")] BeleskaDTO bdt,
-        [property: JsonPropertyName("jeUlogovan")] Boolean jeUlogovan
-        );
 }

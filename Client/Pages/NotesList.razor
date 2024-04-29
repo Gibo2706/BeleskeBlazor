@@ -7,6 +7,9 @@
 @using Radzen.Blazor.Rendering
 @using System.Text
 @inject DataService DataService
+@inject DialogService DialogService
+@inject LoginService loginService
+@inject NavigationManager Navigation
 
 <div class="container">
     <div class="row justify-content-center">
@@ -65,13 +68,13 @@
                     <label for="titleSearch">Title:</label>
                     <input type="text" class="form-control" id="titleSearch" @bind="title" />
                 </div>
-                <div class="form-group mb-3">
-                    <label for="datumOd">Date From:</label>
-                    <RadzenDatePicker @bind-Value=@datumOd ShowCalendarWeek/>
+                <div class="form-group mb-3 mt-2 row align-items-center justify-content-center">
+                    <span class="row text-center row-sm-3">Date From:</span>
+                    <RadzenDatePicker class="col" @bind-Value=@datumOd ShowCalendarWeek />
                 </div>
-                <div class="form-group mb-3">
-                    <label for="datumDo">Date to:</label>
-                    <RadzenDatePicker @bind-Value=@datumDo ShowCalendarWeek />
+                <div class="form-group mb-3 mt-2 row align-items-center justify-content-center">
+                    <span class="row text-center row-sm-3">Date to:</span>
+                    <RadzenDatePicker class="col" @bind-Value=@datumDo ShowCalendarWeek />
                 </div>
                 <div class="mb-3">
                     <label for="tagSelect">Tags:</label>
@@ -84,7 +87,7 @@
                     </select>
                 </div>
                 <hr>
-                <button type="submit" class="btn btn-primary" @onclick="FilterNotes">Filter Notes</button>
+                <button type="submit" class="btn btn-primary">Filter Notes</button>
             </form>
         </div>
     </div>
@@ -99,6 +102,25 @@
                         <div class="card-body">
                             <h4 class="card-title text-center">@note.Naslov</h4>
                             <h6 class="card-text">@note.cas.Datum - @note.cas.predmet.Naziv</h6>
+                            <br />
+                            <blockquote class="blockquote mb-0">
+                                <div class="blockquote-footer">
+                                    @if(note.student != null)
+                                    {
+                                        <span class="card-text">@note.student.Ime @note.student.Prezime</span>
+                                    }else{
+                                        <span class="card-text">Anonymous</span>
+                                    }
+                                </div>
+                            </blockquote>
+                            @if(note.tagovi != null && note.tagovi.Count() > 0){
+                                <div class="column mb-3 text-center text-muted">
+                                    @foreach (var tag in note.tagovi)
+                                    {
+                                            <div class="badge bg-secondary m-1">@tag.Naziv</div>
+                                    }
+                                </div>
+                            }
                         </div>
                         <div class="card-footer">
                             <button class="btn btn-primary" @onclick="() => OpenNoteDetail(note)">View Details</button>
@@ -173,7 +195,8 @@
     string title = "";
     DateOnly? datumOd = null;
     DateOnly? datumDo = null;
-    int[] tagovi = new int[5];
+    Task<bool?> result;
+    int[] tagovi = {};
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,9 +204,6 @@
         Semestri = await DataService.GetAllSemestars();
         Predmeti = await DataService.GetAllSubjects();
         Beleske = new ObservableCollection<BeleskaDTO>();
-        //List<BeleskaDTO>? notes = await DataService.GetAllNotesForLecture(1);
-        //notes?.ForEach(note => Beleske.Add(note));
-
     }
 
     private async Task SubjectInput(PredmetDTO? id)
@@ -215,7 +235,7 @@
         if (id == null) return;
         SelectedLecture = id;
     }
-    
+
     private void TagoviInput(int[] id)
     {
         tagovi = id;
@@ -224,14 +244,36 @@
     private BeleskaDTO? selectedNote;
 
 
-    protected override void OnInitialized()
-    {
-        FilterNotes();
-    }
-
     private async Task FilterNotes()
     {
-        List<BeleskaDTO>? res = await DataService.FilterNotesBy(
+        result = DialogService.Confirm("Do you want to see only your Notes?", "My Notes", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        bool? resB = await result;
+        if (resB == true && LoginService.IsLoggedIn)
+        {
+
+            List<BeleskaDTO>? res = await DataService.FilterNotesBy(
+                                                            predmet: SelectedSubject,
+                                                            brCasa: SelectedLecture,
+                                                            semestar: SelectedSemestar,
+                                                            imeAutora: authorName,
+                                                            prezimeAutora: authorSurname,
+                                                            naslov: title,
+                                                            idTagovi: tagovi,
+                                                            datumDo: datumDo,
+                                                            datumOd: datumOd,
+                                                            moje: true);
+            Beleske?.Clear();
+            res?.ForEach(note => Beleske?.Add(note));
+            await loginService.RenewSession();
+        }
+        else if (resB == true && !LoginService.IsLoggedIn)
+        {
+            await DialogService.Alert("You need to be logged in to see your notes!", "Not logged in", new AlertOptions() { OkButtonText = "Ok" });
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            List<BeleskaDTO>? res = await DataService.FilterNotesBy(
                                                         predmet: SelectedSubject,
                                                         brCasa: SelectedLecture,
                                                         semestar: SelectedSemestar,
@@ -240,9 +282,11 @@
                                                         naslov: title,
                                                         idTagovi: tagovi,
                                                         datumDo: datumDo,
-                                                        datumOd: datumOd);
-        Beleske?.Clear();
-        res?.ForEach(note => Beleske?.Add(note));
+                                                        datumOd: datumOd,
+                                                        moje: null);
+            Beleske?.Clear();
+            res?.ForEach(note => Beleske?.Add(note));
+        }
     }
 
     private void OpenNoteDetail(BeleskaDTO note)

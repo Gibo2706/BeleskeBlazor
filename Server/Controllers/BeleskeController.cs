@@ -44,10 +44,11 @@ namespace BeleskeBlazor.Server.Controllers
         }
 
         [Route("getBeleskeDinamicno")]
+        [HttpPost]
         public async Task<ActionResult> GetBeleskeDinamicno(int? predmet, int? brCasa, int? semestar,
                                                             string? imeAutora, string? prezimeAutora,
                                                             DateOnly? datumOd, DateOnly? datumDo,
-                                                            string? naslov, int[]? idTagovi, Boolean? moje)
+                                                            string? naslov, [FromBody] int[]? idTagovi, Boolean? moje)
         {
             int? idS = HttpContext.Session.GetInt32("UserId");
 
@@ -58,6 +59,7 @@ namespace BeleskeBlazor.Server.Controllers
 
             var list = await _belRepo.GetBeleskeDinamicno(predmet, brCasa, semestar, imeAutora, prezimeAutora,
                                       datumOd, datumDo, idS, naslov, idTagovi, moje);
+            Console.WriteLine("List size: " + idTagovi);
 
             List<BeleskaDTO> beleske = list
                                     .Select(b => ConverterDTO.getDTO(b))
