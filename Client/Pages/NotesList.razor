@@ -198,6 +198,9 @@
     Task<bool?> result;
     int[] tagovi = {};
 
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         Casovi = new ObservableCollection<CasDTO>();
@@ -246,8 +249,9 @@
 
     private async Task FilterNotes()
     {
-        result = DialogService.Confirm("Do you want to see only your Notes?", "My Notes", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
-        bool? resB = await result;
+        if(LoginService.IsLoggedIn)
+            result = DialogService.Confirm("Do you want to see only your Notes?", "My Notes", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
+        bool? resB = result != null ? await result : false;
         if (resB == true && LoginService.IsLoggedIn)
         {
 
@@ -264,7 +268,9 @@
                                                             moje: true);
             Beleske?.Clear();
             res?.ForEach(note => Beleske?.Add(note));
-            await loginService.RenewSession();
+            MainLayout.Dispose();
+            MainLayout.Timer = new(TimeSpan.Parse("00:00:10"));
+            MainLayout.RunTimer();
         }
         else if (resB == true && !LoginService.IsLoggedIn)
         {

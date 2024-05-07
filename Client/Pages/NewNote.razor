@@ -122,6 +122,9 @@
     string content = "";
     int[] tagovi = new int[5];
 
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         content = "";
@@ -177,7 +180,9 @@
         if (LoginService.IsLoggedIn)
         {
             saved = await DataService.SaveBeleska(title, LoginService.IsLoggedIn, beleska, 0, SelectedLecture, tagoviDTO);
-            await loginService.RenewSession();
+            MainLayout.Dispose();
+            MainLayout.Timer = new(TimeSpan.Parse("00:00:10"));
+            MainLayout.RunTimer();
         }
         else
         {

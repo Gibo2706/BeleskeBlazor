@@ -97,8 +97,7 @@ namespace BeleskeBlazor.Client.Service
                    idCas,
                    tagovi
                );
-            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska?jeUlogovan=false", data);
-
+            HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://localhost:7241/api/beleske/addBeleska?jeUlogovan=" + isLoged, data);
             if (response.IsSuccessStatusCode)
             {
                 saved = true;
