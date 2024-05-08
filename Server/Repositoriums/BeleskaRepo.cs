@@ -75,7 +75,7 @@ namespace BeleskeBlazor.Server.Repositoriums
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdStudent == idS);
 
             if (predmet != null)
-                dinamicniUpit = dinamicniUpit.Where(b => b.IdCas == predmet);
+                dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.IdDrziNavigation.IdPredmet == predmet);
 
             if (brCasa != null)
                 dinamicniUpit = dinamicniUpit.Where(b => b.IdCasNavigation.RedniBroj == brCasa);
