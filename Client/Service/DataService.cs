@@ -139,7 +139,7 @@ namespace BeleskeBlazor.Client.Service
             }
             if (semestar != null)
             {
-                url += "brCasa=" + UrlEncoder.Default.Encode("" + semestar.IdSemestar) + "&";
+                url += "semestar=" + UrlEncoder.Default.Encode("" + semestar.IdSemestar) + "&";
             }
             if (imeAutora != null)
             {
