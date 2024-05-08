@@ -51,8 +51,20 @@ namespace BeleskeBlazor.Server.Controllers
                 return BadRequest("Bad password");
 
             HttpContext.Session.SetInt32("UserId", student.IdStudent);
+            HttpContext.Session.SetString("username", student.Username);
             
             return Ok("Logged in as user "+username);
+        }
+
+        [Route("getLoggedUser")]
+        [HttpGet]
+        public async Task<ActionResult<String>> getLoggedUser(int id)
+        {
+            string? stud = HttpContext.Session.GetString("username");
+
+            if (stud == null)
+                stud = "";
+            return Ok(stud);
         }
 
         [Route("logOut")]
