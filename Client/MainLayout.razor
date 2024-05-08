@@ -21,17 +21,14 @@
                             <li class="nav-item">
                                 <a class="nav-link active" href="#">Home</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">About</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Contact</a>
-                            </li>
                             @if (LoginService.IsLoggedIn)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" href="/">@LoginService.User</a>
                                 </li>
+                            <li class="nav-item">
+                                <button class="nav-link" @onclick="Logout">Logout</button>
+                            </li>
                             }
                             else
                             {
@@ -115,6 +112,13 @@
     {
         Timer?.Dispose();
         Timer = null;
+    }
+
+    private async Task Logout()
+    {
+        await loginService.LogOut();
+        StateHasChanged();
+        Navigation.NavigateTo("/");
     }
 
 }

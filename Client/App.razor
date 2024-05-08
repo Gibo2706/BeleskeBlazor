@@ -1,4 +1,6 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@inject LoginService loginService
+
+<Router AppAssembly="@typeof(App).Assembly" OnNavigateAsync="HandleNavigation">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
@@ -12,3 +14,19 @@
 </Router>
 
 <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
+
+@code {
+    async Task HandleNavigation(NavigationContext context)
+    {
+        if (!LoginService.IsLoggedIn)
+        {
+            String? username = await loginService.GetLoggedUser();
+            if (username != null && !username.Equals(""))
+            {
+                LoginService.IsLoggedIn = true;
+                LoginService.User = username;
+            }
+        }
+    }
+
+}

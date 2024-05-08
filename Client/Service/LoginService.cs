@@ -75,6 +75,32 @@
             return data;
         }
 
+        public async Task<String?> GetLoggedUser()
+        {
+            String? data = null;
 
+            // Make an HTTP GET request to fetch data from the server
+            HttpResponseMessage response = await _httpClient.GetAsync("https://localhost:7241/api/auth/getLoggedUser");
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.Content.Headers.ContentLength > 0)
+                {
+                    User = await response.Content.ReadAsStringAsync();
+                    IsLoggedIn = true;
+                }
+                else
+                {
+                    User = "";
+                    IsLoggedIn = false;
+                }
+            }
+            else
+            {
+                data = "";
+            }
+
+            return data;
+        }
     }
 }

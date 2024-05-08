@@ -1,9 +1,6 @@
-﻿using BeleskeBlazor.Shared.DTO;
+﻿using BeleskeBlazor.Server.Repositoriums;
 using BeleskeBlazor.Shared;
 using Microsoft.AspNetCore.Mvc;
-using BeleskeBlazor.Server.Data;
-using BeleskeBlazor.Server.Repositoriums;
-using System.Buffers.Text;
 
 namespace BeleskeBlazor.Server.Controllers
 {
@@ -37,14 +34,14 @@ namespace BeleskeBlazor.Server.Controllers
             Console.WriteLine(System.Convert.ToBase64String(
                                                 System.Text.Encoding.UTF8.GetBytes(password)));
             int? idS = HttpContext.Session.GetInt32("UserId");
-            
+
             if (idS.HasValue)
                 return BadRequest("You are already logged in");
-            
+
             Student? student = _studRepo.getByUsername(username);
 
-            if(student == null)
-                return BadRequest("There is no username like this: "+username);
+            if (student == null)
+                return BadRequest("There is no username like this: " + username);
 
             if (!student.Password.Equals(System.Convert.ToBase64String(
                                                 System.Text.Encoding.UTF8.GetBytes(password))))
@@ -52,26 +49,24 @@ namespace BeleskeBlazor.Server.Controllers
 
             HttpContext.Session.SetInt32("UserId", student.IdStudent);
             HttpContext.Session.SetString("username", student.Username);
-            
-            return Ok("Logged in as user "+username);
+
+            return Ok("Logged in as user " + username);
         }
 
         [Route("getLoggedUser")]
         [HttpGet]
-        public async Task<ActionResult<String>> getLoggedUser(int id)
+        public async Task<ActionResult<String>> getLoggedUser()
         {
             string? stud = HttpContext.Session.GetString("username");
-
-            if (stud == null)
-                stud = "";
             return Ok(stud);
         }
 
         [Route("logOut")]
         [HttpGet]
-        public async Task<ActionResult<String>> logOut(int id)
+        public async Task<ActionResult<String>> logOut()
         {
             HttpContext.Session.Remove("UserId");
+            HttpContext.Session.Remove("username");
             return Ok("Succesfully logged out!");
         }
     }
