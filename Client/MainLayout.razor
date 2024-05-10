@@ -46,7 +46,7 @@
             @if(LoginService.IsLoggedIn){
                 RunTimer();
             }
-            @if (rerender)
+            @if (rerender && LoginService.IsLoggedIn)
             {
                 result = DialogService.Confirm("Your session is about to expire!\nDo you want to renew it?", "Session renewal", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" });
             }
@@ -76,16 +76,16 @@
     bool rerender = false;
     Task<bool?> result;
     public PeriodicTimer? Timer;
-    
+
 
     public async Task RunTimer()
     {
 
         if (Timer == null)
         {
-            Timer = new PeriodicTimer(System.TimeSpan.Parse("00:04:30"));
+            Timer = new(TimeSpan.Parse("00:01:00"));
         }
-        
+
         while (await Timer.WaitForNextTickAsync())
         {
             rerender = true;
@@ -95,6 +95,8 @@
             if (res == true)
             {
                 await loginService.RenewSession();
+                Timer.Dispose();
+                Timer = new(TimeSpan.Parse("00:00:15"));
             }
             else
             {
@@ -116,8 +118,9 @@
 
     private async Task Logout()
     {
+        Dispose();
         await loginService.LogOut();
-        StateHasChanged();
+        //StateHasChanged();
         Navigation.NavigateTo("/");
     }
 

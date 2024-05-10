@@ -35,11 +35,16 @@
     private string? password;
     private string? poruka;
     private bool error = false;
+    [CascadingParameter]
+    public MainLayout MainLayout { get; set; }
 
     private async Task LoginS()
     {
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            await DialogService.Alert("Empty fields!!");
             return;
+        }
         poruka = await loginService.LogIn(username, password);
         if (poruka == "")
         {
@@ -47,6 +52,9 @@
         }
         else
         {
+            MainLayout.Dispose();
+            MainLayout.Timer = new(TimeSpan.Parse("00:01:00"));
+            MainLayout.RunTimer();
             Navigation.NavigateTo("/");
         }
     }

@@ -181,7 +181,7 @@
         {
             saved = await DataService.SaveBeleska(title, LoginService.IsLoggedIn, beleska, 0, SelectedLecture, tagoviDTO);
             MainLayout.Dispose();
-            MainLayout.Timer = new(TimeSpan.Parse("00:00:10"));
+            MainLayout.Timer = new(TimeSpan.Parse("00:01:00"));
             MainLayout.RunTimer();
         }
         else

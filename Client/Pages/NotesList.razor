@@ -269,7 +269,7 @@
             Beleske?.Clear();
             res?.ForEach(note => Beleske?.Add(note));
             MainLayout.Dispose();
-            MainLayout.Timer = new(TimeSpan.Parse("00:00:10"));
+            MainLayout.Timer = new(TimeSpan.Parse("00:01:00"));
             MainLayout.RunTimer();
         }
         else if (resB == true && !LoginService.IsLoggedIn)
